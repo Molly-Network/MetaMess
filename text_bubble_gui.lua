@@ -208,4 +208,4 @@ end
 
 concommand.Add("text_bubble_gui", TEXT_BUBBLE) -- Adds a con command that runs this trash code the command is "text_bubble_gui". might add a chat command
 
--- this code sucks ass 
+-- this code sucks ass. its true
