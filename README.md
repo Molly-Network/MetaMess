@@ -8,8 +8,6 @@ Join Meta Construct - https://metastruct.net/
 
 ### text_bubble_gui.lua
 
-Code used
-
 EasyChat - Editor - https://steamcommunity.com/sharedfiles/filedetails/?id=1182471500
 
 Wire Mod - File browser - https://steamcommunity.com/sharedfiles/filedetails/?id=160250458
