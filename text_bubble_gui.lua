@@ -1,3 +1,12 @@
+-- ______________________
+--< Text Bubble GUI v1.2 >
+-- ----------------------
+--        \   ^__^
+--         \  (oo)\_______
+--            (__)\       )\/\
+--                ||----w |
+--                ||     ||
+
 function TEXT_BUBBLE()
 	
 	local SaveAs = "newfile.txt"
@@ -113,7 +122,6 @@ function TEXT_BUBBLE()
 -- The only functions beening used are GetCode and SetCode
 -- Could make a paramiter to set the site but its fine for now. Also maybe a parmiter to witch betwwen code and text.
 
-
 --===============================================
 --VGUI Derma frame creation
 --===============================================
@@ -123,8 +131,6 @@ function TEXT_BUBBLE()
 	frame:Center()
 	frame:MakePopup()
 	frame:SetSizable( true )
-	
-	
 
 	local editor = vgui.Create('editor', frame) -- Call to create ace editor
 
@@ -173,7 +179,6 @@ function TEXT_BUBBLE()
 	div:SetRightMin( 100 )
 	div:SetLeftWidth( 150 )
 
-
 	local panel = vgui.Create( "DPanel" , frame)-- footer with controls will probably move some to a menubar for a cleaner look
 	panel:Dock(BOTTOM)
 	panel:DockMargin(0, 5, 0, 0)
@@ -187,7 +192,6 @@ function TEXT_BUBBLE()
 		local code = editor:GetCode()
 		textsend = code
 	end
-
 
 	local DComboBox = vgui.Create( "DComboBox", panel ) -- Need to set a better default value as it doesn't set the text if you havent selected a mode
 	DComboBox:SetPos( 5, 30 )
@@ -203,7 +207,6 @@ function TEXT_BUBBLE()
 			hook.Add("Think", "COH_OVERWRITE", function() coh.SendTypedMessage(textsend) end)
 		end
 	end
-	
 	
 	local MenuBar = vgui.Create( "DMenuBar", frame ) -- menu bar copyed from wiki
 	MenuBar:DockMargin( 0,0,0,5 ) --corrects MenuBar pos
@@ -226,11 +229,8 @@ function TEXT_BUBBLE()
 
 	local M3 = MenuBar:AddMenu("Help")
 	M3:AddOption("About", function()  gui.OpenURL("https://github.com/Molly-Network/MetaMess") end) -- link to github
-	
-	
-
 end
 
 concommand.Add("text_bubble_gui", TEXT_BUBBLE) -- Adds a con command that runs this trash code the command is "text_bubble_gui". might add a chat command
 
--- this code sucks ass 
+-- Hello from DuckDuckGo, DM @[Molly]Sherm#3332 me if you having any trouble or found any bugs
