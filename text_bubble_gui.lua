@@ -1,4 +1,6 @@
 function TEXT_BUBBLE()
+	
+	local SaveAs = "newfile.txt"
 
 --=======================================================================================================================
 --HTML panel cration to interface with Ace editor can be put in a diffrent file and called I think this is form easy chat
@@ -111,23 +113,55 @@ function TEXT_BUBBLE()
 -- The only functions beening used are GetCode and SetCode
 -- Could make a paramiter to set the site but its fine for now. Also maybe a parmiter to witch betwwen code and text.
 
+
 --===============================================
 --VGUI Derma frame creation
 --===============================================
-	
 	local frame = vgui.Create("DFrame")
 	frame:SetSize(900,550)
-	frame:SetTitle("Set text bubble")
+	frame:SetTitle("Text Bubble GUI - New file")
 	frame:Center()
 	frame:MakePopup()
 	frame:SetSizable( true )
+	
+	
 
 	local editor = vgui.Create('editor', frame) -- Call to create ace editor
 
 	local files = vgui.Create('wire_expression2_browser', frame) -- Used E2 file browser as re-coding functionality was pointless, will probably chnage some options on the right click menu
 	files:Setup("savedbubbles")-- set data folder 
-	files.OnFileOpen = function(panel, listfile)
-		editor:SetCode(file.Read(listfile, "DATA"))-- panle function un-used
+	files.OnFileOpen = function(panel, listfile)-- panle function un-used
+		editor:SetCode(file.Read(listfile, "DATA"))
+		frame:SetTitle("Text Bubble GUI - " .. files:GetFileName())
+	end
+	
+	local function TextInput(savetype,title) -- Text input window function needs to be here cuz references editor in code
+		local frame = vgui.Create( "DFrame" )
+		frame:SetSize( 300, 75 )
+		frame:SetTitle(title)
+		frame:Center()
+		frame:MakePopup()
+
+		local DLabel = vgui.Create( "DLabel", frame )
+		DLabel:SetText( "Type the file name below and press ENTER." )
+		DLabel:SizeToContents() 
+		DLabel:Dock(TOP)
+
+		local TextEntry = vgui.Create( "DTextEntry", frame )
+		TextEntry:SetSize(0,25)
+		TextEntry:Dock(FILL)
+		TextEntry.OnEnter = function( self )
+			if savetype == s then 
+			local code = editor:GetCode()
+			file.Write( "SavedBubbles/".. self:GetValue() ..".txt", code )-- Save as
+			files:UpdateFolders()
+			frame:Close()
+			else
+			file.Write( "SavedBubbles/".. self:GetValue() ..".txt" )-- New file 
+			files:UpdateFolders()
+			frame:Close()
+			end
+		end
 	end
 	
 	local div = vgui.Create( "DHorizontalDivider", frame ) -- combines the file browser and ace editor
@@ -144,40 +178,6 @@ function TEXT_BUBBLE()
 	panel:Dock(BOTTOM)
 	panel:DockMargin(0, 5, 0, 0)
 	panel.Paint = function(self,w,h)--blanks the DPanel
-	end
-
-	local clear = vgui.Create("DButton", panel) -- Disable button, removes the hook "COH_OVERWRITE"
-	clear:Dock(RIGHT)
-	clear:SetText("Disable")
-	clear.DoClick = function()
-		hook.Remove("Think", "COH_OVERWRITE")
-	end
-
-	local savefile = vgui.Create("DButton", panel) -- Saves current editor text to file, will probably add a save to current file option 
-	savefile:Dock(RIGHT)
-	savefile:SetText("Save to file")
-	savefile.DoClick= function() -- opens a text box to type a name, idk messy could do it better 
-
-		local frame = vgui.Create( "DFrame" )
-		frame:SetSize( 300, 75 )
-		frame:SetTitle("Save bubble")
-		frame:Center()
-		frame:MakePopup()
-
-		local DLabel = vgui.Create( "DLabel", frame )
-		DLabel:SetText( "Type the file name below and press ENTER." )
-		DLabel:SizeToContents() 
-		DLabel:Dock(TOP)
-
-		local TextEntry = vgui.Create( "DTextEntry", frame )
-		TextEntry:SetSize(0,25)
-		TextEntry:Dock(FILL)
-		TextEntry.OnEnter = function( self )
-			local code = editor:GetCode()	-- file saving code
-			file.Write( "SavedBubbles/".. self:GetValue() ..".txt", code )
-			files:UpdateFolders()
-			frame:Close()
-		end
 	end
 
 	local enter = vgui.Create( "DButton" , panel ) -- Button that sets "textsend" to the text on the editor
@@ -203,9 +203,34 @@ function TEXT_BUBBLE()
 			hook.Add("Think", "COH_OVERWRITE", function() coh.SendTypedMessage(textsend) end)
 		end
 	end
+	
+	
+	local MenuBar = vgui.Create( "DMenuBar", frame ) -- menu bar copyed from wiki
+	MenuBar:DockMargin( 0,0,0,5 ) --corrects MenuBar pos
+
+	local M1 = MenuBar:AddMenu( "File" )
+	M1:AddOption("New", function() TextInput(n,"Save As") end):SetIcon("icon16/page_white_go.png") -- New file 
+	M1:AddOption("Save", function() 
+		if files:GetFileName() == nil then -- save functction checks is theres a file loaded if not open save as
+			TextInput(s,"Save As")
+		else
+			local code = editor:GetCode()
+			file.Write(files:GetFileName(),code) 
+		end
+		end):SetIcon("icon16/folder_go.png")
+	M1:AddOption("Save As", function() TextInput(s,"Save As") end):SetIcon("icon16/folder_go.png") -- Save as
+
+	local M2 = MenuBar:AddMenu("Edit")
+	M2:AddOption("Clear", function() editor:ClearCode() end) -- clears the editor window
+	M2:AddOption("Disable", function() hook.Remove("Think", "COH_OVERWRITE") end) -- kills "COH_OVERWRITE" hook
+
+	local M3 = MenuBar:AddMenu("Help")
+	M3:AddOption("About", function()  gui.OpenURL("https://github.com/Molly-Network/MetaMess") end) -- link to github
+	
+	
 
 end
 
 concommand.Add("text_bubble_gui", TEXT_BUBBLE) -- Adds a con command that runs this trash code the command is "text_bubble_gui". might add a chat command
 
--- this code sucks ass. its true
+-- this code sucks ass 
