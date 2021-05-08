@@ -136,7 +136,7 @@ function TEXT_BUBBLE()
 
 	local files = vgui.Create('wire_expression2_browser', frame) -- Used E2 file browser as re-coding functionality was pointless, will probably chnage some options on the right click menu
 	files:Setup("savedbubbles")-- set data folder 
-	files.OnFileOpen = function(panel, listfile)-- panle function un-used
+	files.OnFileOpen = function(panel, listfile) -- panle function un-used
 		editor:SetCode(file.Read(listfile, "DATA"))
 		frame:SetTitle("Text Bubble GUI - " .. files:GetFileName())
 	end
@@ -159,11 +159,11 @@ function TEXT_BUBBLE()
 		TextEntry.OnEnter = function( self )
 			if savetype == s then 
 			local code = editor:GetCode()
-			file.Write( "SavedBubbles/".. self:GetValue() ..".txt", code )-- Save as
+			file.Write( "SavedBubbles/".. self:GetValue() ..".txt", code ) -- Save as
 			files:UpdateFolders()
 			frame:Close()
 			else
-			file.Write( "SavedBubbles/".. self:GetValue() ..".txt" )-- New file 
+			file.Write( "SavedBubbles/".. self:GetValue() ..".txt" ) -- New file 
 			files:UpdateFolders()
 			frame:Close()
 			end
@@ -182,7 +182,7 @@ function TEXT_BUBBLE()
 	local panel = vgui.Create( "DPanel" , frame)-- footer with controls will probably move some to a menubar for a cleaner look
 	panel:Dock(BOTTOM)
 	panel:DockMargin(0, 5, 0, 0)
-	panel.Paint = function(self,w,h)--blanks the DPanel
+	panel.Paint = function(self,w,h) --blanks the DPanel
 	end
 
 	local enter = vgui.Create( "DButton" , panel ) -- Button that sets "textsend" to the text on the editor
