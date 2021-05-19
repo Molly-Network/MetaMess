@@ -7,9 +7,10 @@
 --                ||----w |
 --                ||     ||
 
+-- to open type text_bubble_gui in console
+-- also you need to select a mode before setting text or it wont work. you only need to do this the first time you set the text
+
 function TEXT_BUBBLE()
-	
-	local SaveAs = "newfile.txt"
 
 --=======================================================================================================================
 --HTML panel cration to interface with Ace editor can be put in a diffrent file and called I think this is form easy chat
