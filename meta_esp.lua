@@ -114,16 +114,15 @@ end )
 hook.Add( "HUDPaint", "CoinESP", function()
 
 	-- Get a list of all coins and draw a marker on screen for each coin.
-	for _, coin in ipairs( ents.FindByClass( "coins" ) ) do
+	for _, coin in ipairs( ents.FindByClass( "coin" ) ) do
 
 		-- coin location hooking
 		local coinpoint = coin:GetPos() + coin:OBBCenter() -- Gets the position of the entity, specifically the center.
 		local coindata2D = coinpoint:ToScreen() -- Gets the position of the entity on your screen.
 		local coinvalue = coin:GetValue() -- Get's coins rarity.
-		local rainbow = HSVToColor(( CurTime()*20)%360,1,1)
 
-		draw.RoundedBox(4,coindata2D.x-40, coindata2D.y-6, 80, 15, rainbow)
-		draw.SimpleText( "Val - " .. coinvalue, "Default", coindata2D.x, coindata2D.y, Color( 0,0,0,100 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+		draw.RoundedBox(4,coindata2D.x-40, coindata2D.y-6, 80, 15, Color(255,0,0,100))
+		draw.SimpleText( "Value - " .. coinvalue, "Default", coindata2D.x, coindata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
 	
 end )
