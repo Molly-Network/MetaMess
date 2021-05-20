@@ -20,13 +20,13 @@ hook.Add( "HUDPaint", "RockESP", function()
 
 		if rockrarity == 0 then
 				draw.RoundedBox(4,rockdata2D.x-40, rockdata2D.y-6, 80, 15, Color(255,120,0,100))
-				draw.SimpleText( "Copper - Size:" .. rocksize, "Default", rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( "Copper - Size:" .. rocksize, "MTASkinFont", rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif rockrarity == 1 then
 				draw.RoundedBox(4,rockdata2D.x-40, rockdata2D.y-6, 80, 15, Color(255,255,255,100))
-				draw.SimpleText( "Silver - Size:" .. rocksize, "Default", rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( "Silver - Size:" .. rocksize, "MTASkinFont", rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif rockrarity == 2 then
 				draw.RoundedBox(4,rockdata2D.x-40, rockdata2D.y-6, 80, 15, Color(255,255,0,100))
-				draw.SimpleText( "Gold - Size:" .. rocksize, "Default", rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )			
+				draw.SimpleText( "Gold - Size:" .. rocksize, "MTASkinFont", rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )			
 		end	
 
 	end
@@ -56,16 +56,16 @@ hook.Add( "HUDPaint", "OreESP", function()
 
 		if orerarity == 0 then
 				draw.RoundedBox(4,oredata2D.x-40, oredata2D.y-6, 80, 15, Color(255,120,0,30))
-				draw.SimpleText( "Copper Pickup", "Default", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( "Copper Pickup", "MTASkinFont", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif orerarity == 1 then
 				draw.RoundedBox(4,oredata2D.x-40, oredata2D.y-6, 80, 15, Color(255,255,255,30))
-				draw.SimpleText( "Silver Pickup", "Default", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.SimpleText( "Silver Pickup", "MTASkinFont", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif orerarity == 2 then
 				draw.RoundedBox(4,oredata2D.x-40, oredata2D.y-6, 80, 15, Color(255,255,0,30))
-				draw.SimpleText( "Gold Pickup", "Default", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )		
+				draw.SimpleText( "Gold Pickup", "MTASkinFont", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )		
 		elseif orerarity == 3 then
 				draw.RoundedBox(4,oredata2D.x-40, oredata2D.y-6, 80, 15, Color(255,255,255,30))
-				draw.SimpleText( "Plat Pickup", "Default", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )	
+				draw.SimpleText( "Plat Pickup", "MTASkinFont", oredata2D.x, oredata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )	
 		end	
 
 	end
@@ -82,7 +82,7 @@ end )
 --                                         
 -- ==============================================
 
-hook.Add( "HUDPaint", "CoinESP", function()
+hook.Add( "HUDPaint", "XenESP", function()
 
 	-- Get a list of all coins and draw a marker on screen for each coin.
 	for _, coin in ipairs( ents.FindByClass( "mining_xen_crystal" ) ) do
@@ -95,7 +95,7 @@ hook.Add( "HUDPaint", "CoinESP", function()
 --.. coinvalue
 
 		draw.RoundedBox(4,coindata2D.x-40, coindata2D.y-6, 80, 15, rainbow)
-		draw.SimpleText( "Xen Crystal " , "Default", coindata2D.x, coindata2D.y, Color( 0,0,0,100 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+		draw.SimpleText( "Xen Crystal " , "MTASkinFont", coindata2D.x, coindata2D.y, Color( 0,0,0,100 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
 	
 end )
@@ -109,8 +109,6 @@ end )
 --
 -- ==============================================
 
--- BROKEN IDK SHIT SCUFFED
-
 hook.Add( "HUDPaint", "CoinESP", function()
 
 	-- Get a list of all coins and draw a marker on screen for each coin.
@@ -122,7 +120,28 @@ hook.Add( "HUDPaint", "CoinESP", function()
 		local coinvalue = coin:GetValue() -- Get's coins rarity.
 
 		draw.RoundedBox(4,coindata2D.x-40, coindata2D.y-6, 80, 15, Color(255,0,0,100))
-		draw.SimpleText( "Value - " .. coinvalue, "Default", coindata2D.x, coindata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+		draw.SimpleText( "Value - " .. coinvalue, "MTASkinFont", coindata2D.x, coindata2D.y, Color( 0,0,0,255 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
 	
 end )
+
+-- run espkill to open this window
+
+local function espwin()
+	local frame = vgui.Create("DFrame")
+	frame:SetSize(150,100)
+	frame:SetTitle("Kill ESP")
+	frame:MakePopup()
+	frame:Center()
+	
+	local button = vgui.Create("DButton", frame)
+	button:SetText("Kill ESP")
+	button:Dock(FILL)
+	button.DoClick  = function()
+			hook.Remove("HUDPaint", "CoinESP")
+			hook.Remove("HUDPaint", "XenESP")
+			hook.Remove("HUDPaint", "OreESP")
+			hook.Remove("HUDPaint", "RockESP")
+		end
+end
+concommand.Add("espkill",espwin)
