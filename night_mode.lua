@@ -27,32 +27,14 @@ Frame.Paint = function( self, w, h )
 	draw.RoundedBox( 20, 0, 0, w, h, Color( 48,51,54, 255 ) )
 	draw.RoundedBox( 20, 0, 240, w, h-240, Color( 35,39,42, 255 ) )
 end
-
 	
 local html = vgui.Create("DHTML", Frame)
 html:SetSize( 373,290 )
 html:SetPos( 13, 0 )
 html:OpenURL("http://mememarket.co.uk/rain/")
+html:SetMouseInputEnabled(false)
 html.Paint = function( self, w, h ) 
 end
-
-
-
-local Button4 = vgui.Create("DButton", Frame)
-Button4:SetText( " " )
-Button4:SetFont( "DermaLarge" )
-Button4:SetTextColor( Color(255,255,255) )
-Button4:SetSize( 373,290 )
-Button4:SetPos( 13, 0 )
-Button4.Paint = function( self, w, h )
-	draw.RoundedBox( 0, 0, 0, w, h, Color( 255, 0, 255, 0 ) )
-end
-Button4.DoClick = function()
-
-end
-
-
-
 
 local DLabel = vgui.Create( "DLabel", Frame ) 
 DLabel:SetSize( 400,500 )
@@ -61,7 +43,6 @@ DLabel.Paint = function( self, w, h )
 
 	draw.RoundedBox( 0, 0, 240, w, h-400, Color( 35,39,42, 255 ) )
 end
-
 
 local Button = vgui.Create("DButton", Frame)
 Button:SetText( "x" )
@@ -82,7 +63,6 @@ header:SetSize( 300, 100 )
 header:SetTextColor( Color(255,255,255) )
 header:SetFont( "DermaLarge" )
 header:SetText( "Dark Mode" )
-
 
 local text = vgui.Create( "DLabel", Frame )
 text:SetPos( 20, 270 )
@@ -130,4 +110,3 @@ end
 Button3.DoClick = function()
 	Frame:Close() 
 end
-
