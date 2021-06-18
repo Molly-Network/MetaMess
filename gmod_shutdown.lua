@@ -48,7 +48,6 @@ function Win98Frame( self, w, h )
 	surface.DrawOutlinedRect( -1, -1, w+1, h+1, 1)
 end
 
-
 local Frame = vgui.Create( "DFrame" )
 Frame:SetTitle( " " )
 Frame:SetSize( 300,175 )
@@ -69,7 +68,6 @@ Close.DoClick = function()
 Frame:Close()
 end
 
-
 local title = vgui.Create( "DLabel", Frame )
 title:SetTextColor( Color(255,255,255) )
 title:SetPos( 8, 4 )
@@ -78,12 +76,10 @@ title:SetFont("Trebuchet18")
 title:SetText( "Shut Down Windows" )
 title:SetWrap(true)
 
-
 local Trash = {
 	[1] = false,
 	[2] = false
 }
-
 
 local DiconnectCheck = Frame:Add( "DCheckBoxLabel" )
 DiconnectCheck:SetPos( 100, 40 )
@@ -92,7 +88,6 @@ DiconnectCheck:SetTextColor( Color(0,0,0))
 DiconnectCheck:SetValue( false )
 DiconnectCheck:SetFont("Trebuchet18")
 DiconnectCheck:SizeToContents()
-
 
 local QuitCheck = Frame:Add( "DCheckBoxLabel" )
 QuitCheck:SetPos( 100, 70 )
@@ -110,8 +105,6 @@ TextEntry:SetValue( "Leave message." )
 TextEntry:SetUpdateOnType(true)
 TextEntry:SetFont("Trebuchet18")
 TextEntry:SetDisabled(true)
-
-
 
 function DiconnectCheck:OnChange( val )
 	if val then
@@ -137,8 +130,6 @@ function QuitCheck:OnChange( val )
 	end
 end
 
-
-
 TextEntry.OnEnter = function( self )
 end
 
@@ -147,10 +138,6 @@ img_text:SetPos(20, 50)
 img_text:SetSize(60, 60)
 img_text:SetImage("icon16/computer_delete.png")
 
-
-
-
-		
 local Button = vgui.Create("DButton", Frame)
 Button:SetText( "Cancel" )
 Button:SetTextColor( Color(0,0,0) )
@@ -170,12 +157,10 @@ Button2:SetSize( 75, 30 )
 Button2:SetFont("Trebuchet18")
 Button2.Paint = Win98Button
 
-
 Button2.DoClick = function(self,ply)
-if (Trash[1] == true) then
-	Entity(1):ConCommand(aowl  .. TextEntry:GetValue()) --function not added
+	if (Trash[1] == true) then
+		LocalPlayer():ConCommand("aowl exit "   .. TextEntry:GetValue()) -- exits the game 
 	elseif(Trash[2] == true) then
-Entity(0):DrawModel() -- crashes you game 
+		Entity(0):DrawModel() -- crashes you game 
 	end
 end
-
