@@ -91,7 +91,7 @@ DiconnectCheck:SizeToContents()
 
 local QuitCheck = Frame:Add( "DCheckBoxLabel" )
 QuitCheck:SetPos( 100, 70 )
-QuitCheck:SetText("Quit Ro's Mod?")
+QuitCheck:SetText("Quit Garry's Mod?")
 QuitCheck:SetTextColor( Color(0,0,0))
 QuitCheck:SetValue( false )
 QuitCheck:SetFont("Trebuchet18")
