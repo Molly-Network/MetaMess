@@ -64,9 +64,6 @@ local function assblast(hookname,entname,text,color)
 	end )
 end
 
-
-
-
 	local HalloweenEPS = vgui.Create( "DFrame" )
 	HalloweenEPS:SetTitle( " " )
 	HalloweenEPS:SetSize( 300,175 )
@@ -87,7 +84,6 @@ end
 	HalloweenEPS:Hide()
 	end
 	
-	
 	local title = vgui.Create( "DLabel", HalloweenEPS )
 	title:SetTextColor( Color(255,255,255) )
 	title:SetPos( 8, 4 )
@@ -96,13 +92,6 @@ end
 	title:SetText( "Meta Halloween ESP" )
 	title:SetWrap(true)
 	
-	
-	local Trash = {
-		[1] = false,
-		[2] = false
-	}
-	
-	
 	local Candy = HalloweenEPS:Add( "DCheckBoxLabel" )
 	Candy:SetPos( 100, 40 )
 	Candy:SetText("Candys")
@@ -110,7 +99,6 @@ end
 	Candy:SetValue( false )
 	Candy:SetFont("Trebuchet18")
 	Candy:SizeToContents()
-	
 	
 	local Pumpkin = HalloweenEPS:Add( "DCheckBoxLabel" )
 	Pumpkin:SetPos( 100, 70 )
@@ -135,7 +123,6 @@ end
 	img_text:SetSize(60, 60)
 	img_text:SetImage("icon16/computer_delete.png")
 	
-	
 	local Button2 = vgui.Create("DButton", HalloweenEPS)
 	Button2:SetText( "Enable All" )
 	Button2:SetTextColor( Color(0,0,0) )
@@ -143,7 +130,6 @@ end
 	Button2:SetSize( 75, 30 )
 	Button2:SetFont("Trebuchet18")
 	Button2.Paint = Win98Button
-	
 	
 	Button2.DoClick = function(self,ply)
 	Candy:SetValue(true)
@@ -158,7 +144,6 @@ end
 	Button3:SetSize( 75, 30 )
 	Button3:SetFont("Trebuchet18")
 	Button3.Paint = Win98Button
-	
 	
 	Button3.DoClick = function(self,ply)
 	Candy:SetValue(false)
