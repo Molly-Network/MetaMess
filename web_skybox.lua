@@ -260,15 +260,14 @@ concommand.Add("web_skybox",function()
 	files:DockMargin(0,5,0,0)
 	
 	local function Save(bruh)
-			SavedData.ResolutionX = ResolutionX:GetValue()
-			SavedData.ResolutionY = ResolutionY:GetValue()
-			SavedData.URL = Text:GetValue()
-			local temp = util.TableToJSON(SavedData)
-			PrintTable(SavedData)
-			file.Write(bruh, temp )
+		SavedData.ResolutionX = ResolutionX:GetValue()
+		SavedData.ResolutionY = ResolutionY:GetValue()
+		SavedData.URL = Text:GetValue()
+		local temp = util.TableToJSON(SavedData)
+		file.Write(bruh, temp )
 	end
 	
-		local function TextInput(savetype,title) -- Text input window function needs to be here cuz references editor in code
+	local function TextInput(savetype,title) -- Text input window function needs to be here cuz references editor in code
 		local frame = vgui.Create( "DFrame" )
 		frame:SetSize( 300, 75 )
 		frame:SetTitle(title)
@@ -285,13 +284,13 @@ concommand.Add("web_skybox",function()
 		TextEntry:Dock(FILL)
 		TextEntry.OnEnter = function( self )
 			if savetype == s then 
-			Save("skybox_editor/".. self:GetValue() ..".json")
-			files:UpdateFolders()
-			frame:Close()
+				Save("skybox_editor/".. self:GetValue() ..".json")
+				files:UpdateFolders()
+				frame:Close()
 			else
-			file.Write( "skybox_editor/".. self:GetValue() ..".json" ) -- New file 
-			files:UpdateFolders()
-			frame:Close()
+				file.Write( "skybox_editor/".. self:GetValue() ..".json" ) -- New file 
+				files:UpdateFolders()
+				frame:Close()
 			end
 		end
 	end
