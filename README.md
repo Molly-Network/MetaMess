@@ -14,5 +14,7 @@ Wire Mod - File browser - https://steamcommunity.com/sharedfiles/filedetails/?id
 
 ### web_skybox
 Use 360° x 180° 8k+ images for best results
+
 Con command: web_skybox
+
 Some samples: https://www.eso.org/public/images/archive/category/360pano/list/1/
