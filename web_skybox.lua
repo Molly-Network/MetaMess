@@ -51,6 +51,7 @@ function Win98Frame( self, w, h )
 	surface.DrawOutlinedRect( -1, -1, w+1, h+1, 1)
 end
 
+
 local StatusColor = Color(255,0,0)
 
 if file.Exists("skybox_editor", "DATA") == false then
@@ -69,7 +70,7 @@ local SavedData = {
 	ResolutionX = 7680,
 	ResolutionY = 4320,
 	URL = "https://cdn.eso.org/images/large/aca-dawn-pano2-ext.jpg"
-}
+	}
 
 concommand.Add("web_skybox",function()
 	local WebSkybox = vgui.Create( "DFrame" )
@@ -142,9 +143,7 @@ concommand.Add("web_skybox",function()
 	Search.Paint = Win98Button
 	Search.DoClick = function()
 		Set:SetEnabled(true)
-		Set:SetTextColor(Color(0,0,0))
 		WebPanel:OpenURL(Text:GetValue())
-		print(Text:GetValue())
 		WebSkybox:Refresh()
 		StatusColor = Color(0,0,255)
 		Status:SetText("  Material Loading")
@@ -170,6 +169,7 @@ concommand.Add("web_skybox",function()
 		hook.Add("Think","MatCheck",function() 
 			if(fuckcunt && fuckcunt:GetHTMLMaterial()) then
 				StatusColor = Color(0,255,0)
+				Set:SetTextColor(Color(0,0,0))
 				Status:SetText("  Material Ready")
 				hook.Remove("Think","MatCheck")
 			end
@@ -179,7 +179,6 @@ concommand.Add("web_skybox",function()
 	
 	Set.DoClick = function()
 		if(fuckcunt && fuckcunt:GetHTMLMaterial()) then
-			print("Mat Set")
 			local html_mat = fuckcunt:GetHTMLMaterial()
 			local matdata =
 			{
@@ -191,6 +190,7 @@ concommand.Add("web_skybox",function()
 			local uid = string.Replace(html_mat:GetName(), "__vgui_texture_", "")
 			eatshit = CreateMaterial("WebMaterial_"..uid, "VertexLitGeneric", matdata)
 			fuckcunt:Remove()
+			Set:SetEnabled(false)
 		end
 		render.ModelMaterialOverride(nil)
 		hook.Add("PostDraw2DSkyBox", "Quaddrawer", function()
@@ -260,14 +260,15 @@ concommand.Add("web_skybox",function()
 	files:DockMargin(0,5,0,0)
 	
 	local function Save(bruh)
-		SavedData.ResolutionX = ResolutionX:GetValue()
-		SavedData.ResolutionY = ResolutionY:GetValue()
-		SavedData.URL = Text:GetValue()
-		local temp = util.TableToJSON(SavedData)
-		file.Write(bruh, temp )
+			SavedData.ResolutionX = ResolutionX:GetValue()
+			SavedData.ResolutionY = ResolutionY:GetValue()
+			SavedData.URL = Text:GetValue()
+			local temp = util.TableToJSON(SavedData)
+			PrintTable(SavedData)
+			file.Write(bruh, temp )
 	end
 	
-	local function TextInput(savetype,title) -- Text input window function needs to be here cuz references editor in code
+	local function TextInput(savetype,title) 
 		local frame = vgui.Create( "DFrame" )
 		frame:SetSize( 300, 75 )
 		frame:SetTitle(title)
@@ -284,13 +285,13 @@ concommand.Add("web_skybox",function()
 		TextEntry:Dock(FILL)
 		TextEntry.OnEnter = function( self )
 			if savetype == s then 
-				Save("skybox_editor/".. self:GetValue() ..".json")
-				files:UpdateFolders()
-				frame:Close()
+			Save("skybox_editor/".. self:GetValue() ..".json")
+			files:UpdateFolders()
+			frame:Close()
 			else
-				file.Write( "skybox_editor/".. self:GetValue() ..".json" ) -- New file 
-				files:UpdateFolders()
-				frame:Close()
+			file.Write( "skybox_editor/".. self:GetValue() ..".json" )
+			files:UpdateFolders()
+			frame:Close()
 			end
 		end
 	end
@@ -302,7 +303,7 @@ concommand.Add("web_skybox",function()
 	local M1 = MenuBar:AddMenu( "File" )
 	
 	M1:AddOption("Save", function() 
-		if files:GetFileName() == nil then -- save functction checks is theres a file loaded if not open save as
+		if files:GetFileName() == nil then
 			TextInput(s,"Save As")
 		else 
 			Save(files:GetFileName())
