@@ -823,4 +823,12 @@ removehook.DoClick  = function()
 end
 end
 
+concommand.Add( "mining_esp", function()  
+	local frame = vgui.Create("DFrame")
+	frame:SetSize(900,500)
+	frame:Center()
+	frame:MakePopup()
+	ESP_Settings(frame)
+end)
+
 -- Hello from DuckDuckGo, DM @[Molly]Sherm#3332 if you having any trouble or found any bugs
