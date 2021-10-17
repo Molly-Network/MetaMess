@@ -40,42 +40,13 @@ end
 ==================================================
 ]]--
 
-local RockCopper = {}
-local RockSilver = {}
-local RockGold = {}
-local OreCopper = {}
-local OreSilver = {}
-local OreGold = {}
-local OrePlatinum = {}
-local Coins = {}
-local Xen = {}
+local DataTable = {}
 
--- Reads json files and conversts to tabels
-function ReadStoreData()
 
-	local JSONDataCopperRock = file.Read("espdata/rockcopper.json")
-	local JSONDataSilverRock = file.Read("espdata/rocksilver.json")
-	local JSONDataGoldRock = file.Read("espdata/rockgold.json")
-	local JSONDataCopperOre = file.Read("espdata/orecopper.json")
-	local JSONDataSilverOre = file.Read("espdata/oresilver.json")
-	local JSONDataGoldOre = file.Read("espdata/oregold.json")
-	local JSONDataPlatinumOre = file.Read("espdata/oreplatinum.json")
-	local JSONDataCoins = file.Read("espdata/coins.json")
-	local JSONDataXen = file.Read("espdata/xen.json")
-	local JSONDataEsp = file.Read("espdata/esptick.json")
+local JSONDataEsp = file.Read("espdata/data.json")
+DataTable = util.JSONToTable(JSONDataEsp)
+	
 
-	RockCopper = util.JSONToTable(JSONDataCopperRock)
-	RockSilver = util.JSONToTable(JSONDataSilverRock)
-	RockGold = util.JSONToTable(JSONDataGoldRock)
-	OreCopper = util.JSONToTable(JSONDataCopperOre)
-	OreSilver = util.JSONToTable(JSONDataSilverOre)
-	OreGold = util.JSONToTable(JSONDataGoldOre)
-	OrePlatinum = util.JSONToTable(JSONDataPlatinumOre)
-	Coins = util.JSONToTable(JSONDataCoins)
-	Xen = util.JSONToTable(JSONDataXen)
-	ESPCheck = util.JSONToTable(JSONDataEsp)
-
-end
 
 
 ReadStoreData()
@@ -83,7 +54,7 @@ function ESP_Settings(frame)
 
 -- sets curretn table
 
-local currenttable = RockCopper
+local currenttable = DataTable.RockCopper
 
 -- legecy values
 local offsetxval = 40
@@ -402,27 +373,9 @@ savetext:SetTextColor(Color(255,0,0))
 savetext:Dock(RIGHT)
 
 savebutton.DoClick = function()
-	
-local rockcoppercon = util.TableToJSON(RockCopper)
-local rocksilvercon = util.TableToJSON(RockSilver)
-local rockgoldcon = util.TableToJSON(RockGold)
-local orecoppercon = util.TableToJSON(OreCopper)
-local oresilvercon = util.TableToJSON(OreSilver)
-local oregoldcon = util.TableToJSON(OreGold)
-local oreplatinumcon = util.TableToJSON(OrePlatinum)
-local coinscon = util.TableToJSON(Coins)
-local xencon = util.TableToJSON(Xen)
-	file.Write("espdata/rockcopper.json", rockcoppercon)
-	file.Write("espdata/rocksilver.json", rocksilvercon)
-	file.Write("espdata/rockgold.json", rockgoldcon)
-	file.Write("espdata/orecopper.json", orecoppercon)
-	file.Write("espdata/oresilver.json", oresilvercon)
-	file.Write("espdata/oreplatinum.json", oreplatinumcon)
-	file.Write("espdata/oregold.json", rockgoldcon)
-	file.Write("espdata/coins.json", coinscon)
-	file.Write("espdata/xen.json", xencon)
-
-savetext:SetTextColor(Color(0,255,0))
+	local DataCon = util.TableToJSON(DataTable)
+	file.Write("espdata/data.json", DataCon)
+	savetext:SetTextColor(Color(0,255,0))
 end
 
 --[[
@@ -483,26 +436,26 @@ entitycombo.OnSelect = function( self, index, value )
 		raritycombo:Clear()
 		raritycombo:SetValue("No value avalable")
 		icon:SetFOV(120)
-		currenttable = Coins
+		currenttable = DataTable.Coins
 	elseif value == "Ore" then
 		icon:SetModel( "models/props_combine/breenbust_chunk05.mdl" )
 		icon:SetFOV(30)
 		icon:SetLookAt(Vector(5,0,0))
 		raritycombo:Clear()
-		currenttable = OreCopper
+		currenttable = DataTable.OreCopper
 		addoptions(raritycombo,true)
 	elseif value == "Xen" then
 		icon:SetModel( "models/props_wasteland/rockgranite02a.mdl" )
 		raritycombo:Clear()
 		raritycombo:SetValue("No value avalable")
 		icon:SetFOV(120)
-		currenttable = Xen
+		currenttable = DataTable.Xen
 	else 
 		icon:SetModel( "models/props_wasteland/rockgranite02a.mdl" )
 		icon:SetFOV(120)
 		raritycombo:Clear()
 		icon:SetFOV(120)
-		currenttable = RockCopper
+		currenttable = DataTable.RockCopper
 		addoptions(raritycombo,false)	
 	end
 	seteverything()
@@ -511,22 +464,22 @@ end
 raritycombo.OnSelect = function( self, index, value )
 	if entitycombo:GetValue() == "Rock" then
 		if value == "Gold" then
-			currenttable = RockGold
+			currenttable = DataTable.RockGold
 		elseif value == "Silver" then
-			currenttable = RockSilver
+			currenttable = DataTable.RockSilver
 		else
-			currenttable = RockCopper
+			currenttable = DataTable.RockCopper
 	end
 	elseif entitycombo:GetValue() == "Ore" then
 		if value == "Gold" then
-			currenttable = OreGold
+			currenttable = DataTable.OreGold
 		elseif value == "Silver" then
-			currenttable = OreSilver
+			currenttable = DataTable.OreSilver
 			seteverything()
 		elseif value == "Platinum" then
-			currenttable = OrePlatinum
+			currenttable = DataTable.OrePlatinum
 		else
-			currenttable = OreCopper
+			currenttable = DataTable.OreCopper
 	end
 	end
 	seteverything()
@@ -612,14 +565,14 @@ hook.Add( "HUDPaint", "RockESP", function()
 		local rocksize = rock:GetSize() -- Get's how many layers the rock has.
 
 		if rockrarity == 0 then
-				draw.RoundedBox(RockCopper.BoxCorners,rockdata2D.x-RockCopper.OffsetX, rockdata2D.y-RockCopper.OffsetY, RockCopper.BoxWidth, RockCopper.BoxHight, RockCopper.BoxColor)
-				draw.SimpleText( "Copper - Size:" .. rocksize, RockCopper.Font, rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.RoundedBox(DataTable.RockCopper.BoxCorners,rockdata2D.x-DataTable.RockCopper.OffsetX, rockdata2D.y-DataTable.RockCopper.OffsetY, DataTable.RockCopper.BoxWidth, DataTable.RockCopper.BoxHight, DataTable.RockCopper.BoxColor)
+				draw.SimpleText( "Copper - Size:" .. rocksize, DataTable.RockCopper.Font, rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif rockrarity == 1 then
-				draw.RoundedBox(RockSilver.BoxCorners,rockdata2D.x-RockSilver.OffsetX, rockdata2D.y-RockSilver.OffsetY, RockSilver.BoxWidth, RockSilver.BoxHight, RockSilver.BoxColor)
-				draw.SimpleText( "Silver - Size:" .. rocksize, RockSilver.Font, rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.RoundedBox(DataTable.RockSilver.BoxCorners,rockdata2D.x-DataTable.RockSilver.OffsetX, rockdata2D.y-DataTable.RockSilver.OffsetY, DataTable.RockSilver.BoxWidth, DataTable.RockSilver.BoxHight, DataTable.RockSilver.BoxColor)
+				draw.SimpleText( "Silver - Size:" .. rocksize, DataTable.RockSilver.Font, rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif rockrarity == 2 then
-				draw.RoundedBox(RockGold.BoxCorners,rockdata2D.x-RockGold.OffsetX, rockdata2D.y-RockGold.OffsetY, RockGold.BoxWidth, RockGold.BoxHight, RockGold.BoxColor)
-				draw.SimpleText( "Gold - Size:" .. rocksize, RockGold.Font, rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )		
+				draw.RoundedBox(DataTable.RockGold.BoxCorners,rockdata2D.x-DataTable.RockGold.OffsetX, rockdata2D.y-DataTable.RockGold.OffsetY, DataTable.RockGold.BoxWidth, DataTable.RockGold.BoxHight, DataTable.RockGold.BoxColor)
+				draw.SimpleText( "Gold - Size:" .. rocksize, DataTable.RockGold.Font, rockdata2D.x, rockdata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )		
 		end	
 
 	end
@@ -649,17 +602,17 @@ hook.Add( "HUDPaint", "OreESP", function()
 		local orerarity = ore:GetRarity() -- Get's ores rarity.
 
 		if orerarity == 0 then
-				draw.RoundedBox(OreCopper.BoxCorners,oredata2D.x-OreCopper.OffsetX, oredata2D.y-OreCopper.OffsetY, OreCopper.BoxWidth, OreCopper.BoxHight, OreCopper.BoxColor)
-				draw.SimpleText( "Copper - Pickup", OreCopper.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.RoundedBox(DataTable.OreCopper.BoxCorners,oredata2D.x-DataTable.OreCopper.OffsetX, oredata2D.y-DataTable.OreCopper.OffsetY, DataTable.OreCopper.BoxWidth, DataTable.OreCopper.BoxHight, DataTable.OreCopper.BoxColor)
+				draw.SimpleText( "Copper - Pickup", DataTable.OreCopper.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif orerarity == 1 then
-				draw.RoundedBox(OreSilver.BoxCorners,oredata2D.x-OreSilver.OffsetX, oredata2D.y-OreSilver.OffsetY, OreSilver.BoxWidth, OreSilver.BoxHight, OreSilver.BoxColor)
-				draw.SimpleText( "Silver - Pickup", OreSilver.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.RoundedBox(DataTable.OreSilver.BoxCorners,oredata2D.x-DataTable.OreSilver.OffsetX, oredata2D.y-DataTable.OreSilver.OffsetY, DataTable.OreSilver.BoxWidth, DataTable.OreSilver.BoxHight, DataTable.OreSilver.BoxColor)
+				draw.SimpleText( "Silver - Pickup", DataTable.OreSilver.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		elseif orerarity == 2 then
-				draw.RoundedBox(OreGold.BoxCorners,oredata2D.x-OreGold.OffsetX, oredata2D.y-OreGold.OffsetY, OreGold.BoxWidth, OreGold.BoxHight, OreGold.BoxColor)
-				draw.SimpleText( "Gold - Pickup", OreGold.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )	
+				draw.RoundedBox(DataTable.OreGold.BoxCorners,oredata2D.x-DataTable.OreGold.OffsetX, oredata2D.y-DataTable.OreGold.OffsetY, DataTable.OreGold.BoxWidth, DataTable.OreGold.BoxHight, DataTable.OreGold.BoxColor)
+				draw.SimpleText( "Gold - Pickup", DataTable.OreGold.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )	
 		elseif orerarity == 3 then
-				draw.RoundedBox(OrePlatinum.BoxCorners,oredata2D.x-OrePlatinum.OffsetX, oredata2D.y-OrePlatinum.OffsetY, OrePlatinum.BoxWidth, OrePlatinum.BoxHight, OrePlatinum.BoxColor)
-				draw.SimpleText( "Platinum - Pickup", OrePlatinum.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+				draw.RoundedBox(DataTable.OrePlatinum.BoxCorners,oredata2D.x-DataTable.OrePlatinum.OffsetX, oredata2D.y-DataTable.OrePlatinum.OffsetY, DataTable.OrePlatinum.BoxWidth, DataTable.OrePlatinum.BoxHight, DataTable.OrePlatinum.BoxColor)
+				draw.SimpleText( "Platinum - Pickup", DataTable.OrePlatinum.Font, oredata2D.x, oredata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 		end	
 
 	end
@@ -688,8 +641,8 @@ hook.Add( "HUDPaint", "XenESP", function()
 		local xendata2D = xenpoint:ToScreen() -- Gets the position of the entity on your screen.
 		local rainbow = HSVToColor(( CurTime()*20)%360,1,1)
 
-		draw.RoundedBox(Xen.BoxCorners,xendata2D.x-Xen.OffsetX, xendata2D.y-Xen.OffsetY, Xen.BoxWidth, Xen.BoxHight, Xen.BoxColor)
-		draw.SimpleText( "Xen Crystal", Xen.Font, xendata2D.x, xendata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+		draw.RoundedBox(DataTable,Xen.BoxCorners,xendata2D.x-DataTable.Xen.OffsetX, xendata2D.y-DataTable.Xen.OffsetY, DataTable.Xen.BoxWidth, DataTable.Xen.BoxHight, DataTable.Xen.BoxColor)
+		draw.SimpleText( "Xen Crystal", DataTable.Xen.Font, xendata2D.x, xendata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
 	
 end )
@@ -715,8 +668,8 @@ hook.Add( "HUDPaint", "CoinESP", function()
 		local coindata2D = coinpoint:ToScreen() -- Gets the position of the entity on your screen.
 		local coinvalue = coin:GetValue() -- Get's coins value.
 
-		draw.RoundedBox(Coins.BoxCorners,coindata2D.x-Coins.OffsetX, coindata2D.y-Coins.OffsetY, Coins.BoxWidth, Coins.BoxHight, Coins.BoxColor)
-		draw.SimpleText( "Coin - Value:" .. coinvalue, Coins.Font, coindata2D.x, coindata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+		draw.RoundedBox(DataTable.Coins.BoxCorners,coindata2D.x-DataTable.Coins.OffsetX, coindata2D.y-DataTable.Coins.OffsetY, DataTable.Coins.BoxWidth, DataTable.Coins.BoxHight, DataTable.Coins.BoxColor)
+		draw.SimpleText( "Coin - Value:" .. coinvalue, DataTable.Coins.Font, coindata2D.x, coindata2D.y, Color( 0,0,0 ), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
 	end
 	
 end )
@@ -734,13 +687,13 @@ end
 =============================================
 ]]--
 
-if ESPCheck.rockcheck then
+if DataTable.ESPCheck.rockcheck then
 	rockesp()
-elseif ESPCheck.orecheck then
+elseif DataTable.ESPCheck.orecheck then
 	oreesp()
-elseif ESPCheck.xencheck then
+elseif DataTable.ESPCheck.xencheck then
 	xenesp()
-elseif ESPCheck.coincheck then
+elseif DataTable.ESPCheck.coincheck then
 	coinesp()
 end
 
@@ -751,23 +704,21 @@ local xentick = imagecheckbox(checkpanel,"Xen")
 local cointick = imagecheckbox(checkpanel,"Coin")
 
 local function espticksave()
-	local espcon = util.TableToJSON(ESPCheck)
-	file.Write("espdata/esptick.json", espcon)
+	
 end 
 
-
-rocktick:SetChecked(ESPCheck.rockcheck)
-oretick:SetChecked(ESPCheck.orecheck)
-xentick:SetChecked(ESPCheck.xencheck)
-cointick:SetChecked(ESPCheck.coincheck)
+rocktick:SetChecked(DataTable.ESPCheck.rockcheck)
+oretick:SetChecked(DataTable.ESPCheck.orecheck)
+xentick:SetChecked(DataTable.ESPCheck.xencheck)
+cointick:SetChecked(DataTable.ESPCheck.coincheck)
 
 function rocktick:OnChange(val)
 if val then
 	rockesp()
-	ESPCheck.rockcheck = true
+	DataTable.ESPCheck.rockcheck = true
 elseif val == false then
 	hook.Remove("HUDPaint", "RockESP")
-	ESPCheck.rockcheck = false
+	DataTable.ESPCheck.rockcheck = false
 end
 espticksave()
 end
@@ -776,10 +727,10 @@ end
 function oretick:OnChange(val)
 if val then
 	oreesp()
-	ESPCheck.orecheck = true
+	DataTable.ESPCheck.orecheck = true
 else
 	hook.Remove("HUDPaint", "OreESP")
-	ESPCheck.orecheck = false
+	DataTable.ESPCheck.orecheck = false
 end
 espticksave()
 end
@@ -787,10 +738,10 @@ end
 function xentick:OnChange(val)
 if val then
 	xenesp()
-	ESPCheck.xencheck = true
+	DataTable.ESPCheck.xencheck = true
 else
 	hook.Remove("HUDPaint", "XenESP")
-	ESPCheck.xencheck = false
+	DataTable.ESPCheck.xencheck = false
 end
 espticksave()
 end
@@ -798,10 +749,10 @@ end
 function cointick:OnChange(val)
 if val then
 	coinesp()
-	ESPCheck.coincheck = true
+	DataTable.ESPCheck.coincheck = true
 else
 	hook.Remove("HUDPaint", "CoinESP")
-	ESPCheck.coincheck = false
+	DataTable.ESPCheck.coincheck = false
 end
 espticksave()
 end
@@ -811,10 +762,10 @@ removehook.DoClick  = function()
 	oretick:SetChecked(false)
 	xentick:SetChecked(false)
 	cointick:SetChecked(false)
-	ESPCheck.coincheck = false
-	ESPCheck.xencheck = false
-	ESPCheck.orecheck = false
-	ESPCheck.rockcheck = false
+	DataTable.ESPCheck.coincheck = false
+	DataTable.ESPCheck.xencheck = false
+	DataTable.ESPCheck.orecheck = false
+	DataTable.ESPCheck.rockcheck = false
 	hook.Remove("HUDPaint", "CoinESP")
 	hook.Remove("HUDPaint", "XenESP")
 	hook.Remove("HUDPaint", "OreESP")
@@ -831,4 +782,4 @@ concommand.Add( "mining_esp", function()
 	ESP_Settings(frame)
 end)
 
--- Hello from DuckDuckGo, DM @[Molly]Sherm#3332 if you having any trouble or found any bugs
+-- Hello from DuckDuckGo, DM @[Molly]Sherm#3332 if you having any trouble or found any bugs                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
