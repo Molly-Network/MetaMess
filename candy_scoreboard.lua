@@ -45,7 +45,7 @@ hook.Add("PostDrawOpaqueRenderables","222", function()
 				if fancytext == 1 then
 					local Markup = ec_markup.AdvancedParse(v[2], {
 						nick = true,
-						default_color = Color(0,0,0),
+						default_color = Color(255,255,255),
 						default_font = "MollySubheader",
 						shadow_intensity = 0,
 					})
