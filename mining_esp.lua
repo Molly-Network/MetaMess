@@ -45,11 +45,7 @@ local DataTable = {}
 
 local JSONDataEsp = file.Read("espdata/data.json")
 DataTable = util.JSONToTable(JSONDataEsp)
-	
 
-
-
-ReadStoreData()
 function ESP_Settings(frame)
 
 -- sets curretn table
