@@ -226,7 +226,7 @@ function TEXT_BUBBLE()
 
 	local M2 = MenuBar:AddMenu("Edit")
 	M2:AddOption("Clear", function() editor:ClearCode() end) -- clears the editor window
-	M2:AddOption("Disable", function() hook.Remove("Think", "COH_OVERWRITE") end) -- kills "COH_OVERWRITE" hook
+	M2:AddOption("Disable", function() hook.Remove("Think", "COH_OVERWRITE") coh.SendTypedMessage("") end) -- kills "COH_OVERWRITE" hook
 
 	local M3 = MenuBar:AddMenu("Help")
 	M3:AddOption("About", function()  gui.OpenURL("https://github.com/Molly-Network/MetaMess") end) -- link to github
