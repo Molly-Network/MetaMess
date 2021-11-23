@@ -55,9 +55,11 @@ table.insert(PingGraph,{OldPing = LocalPlayer():Ping() ,NewPing = LocalPlayer():
 local delay = 0
 local num = 1
 
-
 local PingDelay = 0
 local PingNum = 1
+
+local SavedMAXFPS = 0
+local SavedMinFPS = 300
 
 local function Format_Numbers(coin)
 
@@ -82,7 +84,16 @@ local function FormatTime(time)
 	
 	return value.h .. ":" .. value.m .. ":" .. value.s
 end
-	
+
+hook.Add("Think","FPS Check", function()
+	if  SavedMAXFPS < math.Round(( 1 / FrameTime() )) then
+		SavedMAXFPS = math.Round(( 1 / FrameTime() ))
+	end
+		
+	if  SavedMinFPS > math.Round(( 1 / FrameTime() )) then
+		SavedMinFPS = math.Round(( 1 / FrameTime() ))
+	end
+end)
 	
 local CoinIcon = Material("icon16/coins.png")
 local DevIcon = Material("meta/meta_logo.png")
@@ -204,7 +215,8 @@ hook.Add("PostDrawOpaqueRenderables","infoboard", function()
 		end
 
 		
-		draw.SimpleText( "Update: 20ms", "MollyPlayer", 1570,100,ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )
+		draw.SimpleText( "Update: 20ms", "MollyPlayer", 1570,100,ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )		
+		draw.SimpleText( "Min FPS: " .. SavedMinFPS .. "  Max FPS: "  .. SavedMAXFPS, "MollyPlayer", 1570,140,ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )
 		draw.SimpleText( "Update: 2s", "MollyPlayer", 1570,770,ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )
 		draw.SimpleText( FPSGraph[num].NewFPS, "MollyPlayer", 1555+10*num,680-FPSGraph[num].NewFPS*2,ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )
 		draw.SimpleText( ServerFPSGraph[num].NewFPS, "MollyPlayer", 1555+10*num,680-ServerFPSGraph[num].NewFPS*2,ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )
