@@ -187,8 +187,8 @@ hook.Add("PostDrawOpaqueRenderables","infoboard", function()
 		end
 		
 		for i = 1, 15 do
-			draw.SimpleText( 320 - i*20, "MollyGraph", 2940,80 + i*40,ColorBlack,TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER )
-			draw.SimpleText( 320 - i*20, "MollyGraph", 2215,750 + i*40,ColorBlack,TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER )
+			draw.SimpleText( 320 - i*20, "MollyGraph", 2940,80 + i*40,ColorBlueGrey,TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER )
+			draw.SimpleText( 320 - i*20, "MollyGraph", 2215,750 + i*40,ColorBlueGrey,TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER )
 		end
 		
 		for i = 1, PingNum do
