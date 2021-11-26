@@ -54,6 +54,8 @@ Frame:SetTitle(" ")
 Frame:ShowCloseButton(false)
 Frame.Paint = function ( self,w,h )
 
+	surface.SetFont("MollySubheader")
+
 	local VersionLength = surface.GetTextSize("Version ") + surface.GetTextSize(Version)
 
 	-- Background
