@@ -248,6 +248,12 @@ hook.Add("PostDrawOpaqueRenderables","infoboard", function()
     -- The shit above needs to get dumped into a single function to reduse the bess by like half 
 		
 		for i, v in ipairs( player.GetAll() ) do
+			if i >= 30 then 
+				if i == 30 then 
+				draw.RoundedBox(10,10,77+i*45,1530,41,ColorDarkBlack)
+				draw.SimpleText( "Too many players ...", "MollySubheader", 20,70+i*45, ColorWhite,TEXT_ALIGN_LEFT,TEXT_ALIGN_TOP )
+				else return nil end
+			else
 				local text = string.gsub( v:Nick(), "%<.-%>", "" )
 				draw.RoundedBox(10,10,77+i*45,1530,41,ColorDarkBlack)
 				
@@ -279,8 +285,7 @@ hook.Add("PostDrawOpaqueRenderables","infoboard", function()
 					surface.DrawTexturedRect( 1195, 82+i*45, 30,30 )
 					draw.SimpleText( "Trusted", "MollyPlayer", 1190,75+i*45, ColorWhite,TEXT_ALIGN_RIGHT,TEXT_ALIGN_TOP )
 				end
-				
-				 
+			end	 
 		end
 	cam.End3D2D()
 end)
