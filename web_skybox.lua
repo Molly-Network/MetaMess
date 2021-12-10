@@ -103,7 +103,6 @@ concommand.Add("web_skybox",function()
 	
 	local WebPanel = vgui.Create("DHTML", WebSkybox)
 	WebPanel:Dock(FILL)
-	WebPanel:DockMargin(0,0,5,0)
 	
 	
 	local ButtonPanel = vgui.Create("DPanel", WebSkybox)
