@@ -51,16 +51,13 @@ function Win98Frame( self, w, h )
 	surface.DrawOutlinedRect( -1, -1, w+1, h+1, 1)
 end
 
-
-local StatusColor = Color(255,0,0)
-
 if file.Exists("skybox_editor", "DATA") == false then
 	file.CreateDir("skybox_editor")
 	file.Write( "skybox_editor/blank.json" )
 end
 
 local Values = {
-	ScreenScaleXValue = 0.9375,
+	ScreenScaleXValue = 0.9370, -- Fixed black line in skybox
 	ScreenScaleYValue = 0.465,
 	MaterialPositionX = 0,
 	MaterialPositionY = 0.06,
@@ -73,6 +70,9 @@ local SavedData = {
 	}
 
 concommand.Add("web_skybox",function()
+		
+	local StatusColor = Color(255,0,0)
+		
 	local WebSkybox = vgui.Create( "DFrame" )
 	WebSkybox:SetTitle( " " )
 	WebSkybox:SetSize( 1000,600 )
@@ -103,7 +103,6 @@ concommand.Add("web_skybox",function()
 	
 	local WebPanel = vgui.Create("DHTML", WebSkybox)
 	WebPanel:Dock(FILL)
-	
 	
 	local ButtonPanel = vgui.Create("DPanel", WebSkybox)
 	ButtonPanel:Dock(BOTTOM)
@@ -295,7 +294,6 @@ concommand.Add("web_skybox",function()
 		end
 	end
 	
-	
 	local MenuBar = vgui.Create( "DMenuBar", WebSkybox )
 	MenuBar:DockMargin( 0,-5,0,0 )
 
@@ -310,7 +308,11 @@ concommand.Add("web_skybox",function()
 	end):SetIcon("icon16/folder_go.png")
 		
 	M1:AddOption("Save As", function() TextInput(s,"Save As") end):SetIcon("icon16/folder_go.png") -- Save as
-
+	
+	local M2 = MenuBar:AddMenu("Sites")
+	M2:AddOption("PolyHaven", function()  gui.OpenURL("https://polyhaven.com/hdris") end)
+	M2:AddOption("ESO", function()  gui.OpenURL("https://www.eso.org/public/images/?search=360+degree+panorama") end)
+	
 	local M3 = MenuBar:AddMenu("Help")
 	M3:AddOption("About", function()  gui.OpenURL("https://github.com/Molly-Network/MetaMess") end) -- link to github
 end)
