@@ -43,7 +43,6 @@ function GetSite()
 		WeatherText = string.gsub(body,"️","")
 		WeatherText = [[
 		]] .. WeatherText
-		hook.Add("Think", "Weather", function() coh.StartChat(true) coh.SendTypedMessage(WeatherText) end)
 	end)
 end
 
