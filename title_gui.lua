@@ -589,7 +589,7 @@ concommand.Add("title_gui",function()
 end)
 
 -- Context menu icon setup
-local icon = "icon16/textfield_rename.png"
+local icon = "icon16/tab_edit.png"
 icon = file.Exists("materials/"..icon,'GAME') and icon or "icon64/playermodel.png"
 
 list.Set(
