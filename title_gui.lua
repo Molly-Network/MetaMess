@@ -71,10 +71,10 @@ end
 
 -- Custom icon buttons
 local function StyleButton(Perent,Icon,Text,ColorNormal,ColorHovered)
-	local StyleButton = vgui.Create("DButton",Perent)
-	StyleButton:SetSize(128,52)
-	StyleButton:SetText("")
-	StyleButton.Paint = function(self,w,h)
+	local Button = vgui.Create("DButton",Perent)
+	Button:SetSize(128,52)
+	Button:SetText("")
+	Button.Paint = function(self,w,h)
 		-- Background
 		if (self:IsDown()) then
 			draw.RoundedBox(10,0,0,w,h,ColorNormal)
@@ -90,7 +90,7 @@ local function StyleButton(Perent,Icon,Text,ColorNormal,ColorHovered)
 		--Text
 		draw.SimpleText(Text,"MollyButton",w-48,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
 	end
-	return StyleButton
+	return Button
 end
 
 -- Custom text entry
@@ -162,7 +162,6 @@ local function TextPopup()
 	
 	local Text,Body = StyleTextEntry(Frame,245,"Filename")
 	Body:SetPos(15,20)
-	local Sussy = Text:GetValue()
 	
 	local Save = StyleButton(Frame,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
 	Save:SetPos(274,20)
@@ -236,7 +235,8 @@ concommand.Add("title_gui",function()
 	-- DListView 
 	local TitleList = vgui.Create( "DListView", Image )
 	TitleList:Dock(FILL)
-	local Position = TitleList:AddColumn("Position")
+	TitleList:SetMultiSelect(false)
+	TitleList:AddColumn("Position")
 	TitleList:AddColumn("Text")
 	TitleList:AddColumn("Delay")
 	TitleList.Paint = nil
@@ -318,14 +318,19 @@ concommand.Add("title_gui",function()
 	
 	local EditPanelW,EditPanelH = EditPanel:GetSize()
 	
+	local CaretPos = nil
 	-- Text entry [used to set the title text]
 	local TextEntry,TextMain = StyleTextEntry(EditPanel,EditPanelW-50,"Title Text")
 	TextMain:SetPos(25,25)
+	TextEntry.OnLoseFocus = function( self )
+		CaretPos = self:GetCaretPos()
+	end
 	
 	-- Delay entry [locked to numerical used to input delay] 
 	local DelayEntry,DelayMain = StyleTextEntry(EditPanel,EditPanelW-193,"Delay [Seconds]")
 	DelayMain:SetPos(25,92)
 	DelayEntry:SetNumeric(true)
+	DelayEntry:SetValue("4")
 	
 	-- Color mixer
 	local ColorMixer = vgui.Create("DColorMixer",EditPanel)
@@ -337,7 +342,10 @@ concommand.Add("title_gui",function()
 	local ColorSelect = StyleButton(EditPanel,Material("icon16/color_wheel.png"),"Colour",Color(37, 37, 37, 255),ColorBlue)
 	ColorSelect:SetPos(EditPanelW-153,92)
 	ColorSelect.DoClick = function()
-		TextEntry:SetValue(TextEntry:GetValue() .. "<color=" .. ColorMixer:GetColor().r .. "," .. ColorMixer:GetColor().g .. "," .. ColorMixer:GetColor().b .. ">")
+		local clr = ColorMixer:GetColor()
+		local temp = TextEntry:GetValue()
+		local left = string.Left(temp, CaretPos)
+		TextEntry:SetValue(left .. "<color=" .. clr.r .. "," .. clr.g .. "," .. clr.b .. ">" .. string.Replace(temp, left, ""))
 	end
 	
 	-- Example draw [Uses easychat markup to show the user what the title would look like ingame]
@@ -357,7 +365,7 @@ concommand.Add("title_gui",function()
 	
 	-- Clear function [resets all values and saves the current table to file]
 	local function ClearForm()
-		DelayEntry:SetValue("")
+		DelayEntry:SetValue("4")
 		TextEntry:SetValue("")
 		TitleListRefresh()
 		EditMode = false
@@ -555,20 +563,23 @@ concommand.Add("title_gui",function()
 	local SetChanges = StyleButton(FooterMenu,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
 	SetChanges:Dock(LEFT)
 	SetChanges.DoClick = function()
-		
-		if DelayEntry:GetValue() == "" or TextEntry:GetValue() == "" then
-			MollyNote(LoginPanel, "Invalid Input",ColorRed )
+		if tonumber(DelayEntry:GetValue()) < 0 then
+		MollyNote(LoginPanel, "Delay lower Than 0",ColorRed )
 		else
-			if EditMode then 
-				table.remove( Titles, ActiveLine) 
-				table.insert( Titles,ActiveLine, {[1] = TextEntry:GetValue(),[2] = DelayEntry:GetValue()} )
+			if DelayEntry:GetValue() == "" or TextEntry:GetValue() == "" then
+				MollyNote(LoginPanel, "Invalid Input",ColorRed )
 			else
-				table.insert( Titles, {[1] = TextEntry:GetValue(),[2] = DelayEntry:GetValue()} )
+				if EditMode then 
+					table.remove( Titles, ActiveLine) 
+					table.insert( Titles,ActiveLine, {[1] = TextEntry:GetValue(),[2] = DelayEntry:GetValue()} )
+				else
+					table.insert( Titles, {[1] = TextEntry:GetValue(),[2] = DelayEntry:GetValue()} )
+				end
+				
+				MollyNote(LoginPanel, "Added/Edited",ColorGreen )
+				ClearForm()
+				EditMode = false
 			end
-			
-			MollyNote(LoginPanel, "Added/Edited",ColorGreen )
-			ClearForm()
-			EditMode = false
 		end
 	end
 	
