@@ -259,11 +259,14 @@ concommand.Add("title_gui",function()
 	
 	TitleList.Columns[2].Header.Paint = function(self,w,h)
 		if (self:IsDown()) then
-			draw.RoundedBoxEx(10,1,0,w,h,ColorBlue)
+		    surface.SetDrawColor(ColorBlue)
+		    surface.DrawRect(1,0, w,h)
 		elseif(self:IsHovered()) then
-			draw.RoundedBoxEx(10,1,0,w,h,ColorOffGrey)
+			surface.SetDrawColor(ColorOffGrey)
+			surface.DrawRect(1,0, w,h)
 		else
-			draw.RoundedBoxEx(10,1,0,w,h,ColorBlue)
+			surface.SetDrawColor(ColorBlue)
+			surface.DrawRect(1,0, w,h)
 		end
 	end
 	
@@ -346,6 +349,8 @@ concommand.Add("title_gui",function()
 		local temp = TextEntry:GetValue()
 		local left = string.Left(temp, CaretPos)
 		TextEntry:SetValue(left .. "<color=" .. clr.r .. "," .. clr.g .. "," .. clr.b .. ">" .. string.Replace(temp, left, ""))
+		TextEntry:RequestFocus()
+		TextEntry:SetCaretPos(string.len(TextEntry:GetValue()))
 	end
 	
 	-- Example draw [Uses easychat markup to show the user what the title would look like ingame]
@@ -421,8 +426,8 @@ concommand.Add("title_gui",function()
 			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
 		end
 		
-		local Files = vgui.Create('wire_expression2_browser', Frame)
-		Files:Setup("meta_titles")-- set data folder 
+		local Files = vgui.Create("wire_expression2_browser", Frame)
+		Files:Setup("meta_titles")
 		Files:Dock(FILL)
 		Files.Folders.Paint = function(self,w,h)
 			draw.RoundedBox(10, 0, 0, w, h, Color(27,27,27, 255))
@@ -564,7 +569,7 @@ concommand.Add("title_gui",function()
 	SetChanges:Dock(LEFT)
 	SetChanges.DoClick = function()
 		if tonumber(DelayEntry:GetValue()) < 0 then
-		MollyNote(LoginPanel, "Delay lower Than 0",ColorRed )
+		MollyNote(LoginPanel, "Delay lower than 0",ColorRed )
 		else
 			if DelayEntry:GetValue() == "" or TextEntry:GetValue() == "" then
 				MollyNote(LoginPanel, "Invalid Input",ColorRed )
@@ -615,7 +620,3 @@ list.Set(
 		end
 	}
 )
-
-if IsValid(g_ContextMenu) and CreateContextMenu then
-	CreateContextMenu()
-end
