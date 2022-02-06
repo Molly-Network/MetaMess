@@ -677,3 +677,7 @@ list.Set(
 		end
 	}
 )
+
+if IsValid(g_ContextMenu) and CreateContextMenu then
+	CreateContextMenu()
+end 
