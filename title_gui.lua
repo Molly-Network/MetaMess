@@ -53,9 +53,11 @@ pressing on the "Colour" button.
 5. You can load and save multiple title sets incase you want
 more than one set of titles.
 
-If you find any bugs or issues contact me on discord 
+If you find any bugs or issues contact me on discord
+[Molly]Sherm#3332
 
-Stay Sussy - [Molly]Sherm#3332/DuckDuckGo
+Stay Sussy - DuckDuckGo x Henke
+
 
 ]] 
 
@@ -585,7 +587,7 @@ concommand.Add("title_gui",function()
 		DLabel:SetTextColor(ColorWhite)
 		DLabel:SetText(Info)
 		DLabel:Dock(FILL)
-		DLabel:DockMargin(25,0,0,0)
+		DLabel:DockMargin(25,40,0,0)
 
 		local Menu = vgui.Create("DPanel",Frame)
 		Menu:Dock(BOTTOM)
