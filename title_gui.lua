@@ -43,6 +43,23 @@ local GUITitle = "Title GUI"
 local Titles = {}
 local EditMode = false
 local ActiveLine = nil
+local Info = [[
+Heres some info to get you started on your title adventrue
+
+1. Right click on the list items for options.
+2. Double clicking list itmes will set them to edit mode.
+3. You can delete items by right clicking on them and pressing 
+delete or you could edit them then press the "Delete" button.
+4. You can add colors by selecting a color form the mixer and
+pressing on the "Colour" button.
+5. You can load and save multiple title sets incase you want
+more than one set of titles.
+
+If you find any bugs or issues contact me on discord 
+
+Stay Sussy - [Molly]Sherm#3332/DuckDuckGo
+
+]] 
 
 -- save to table function
 local function SaveTable(filename)
@@ -539,12 +556,50 @@ concommand.Add("title_gui",function()
 	HeaderMenu.Paint = nil
 	
 	-- Add button [Clear form and resets edit staus to allow the user to add a new title]
-	local Add = StyleButton(HeaderMenu,Material("icon16/add.png"),"New",Color(26, 26, 26, 255),ColorGreen)
+	local Add = StyleButton(HeaderMenu,Material("icon16/information.png"),"Info",Color(26, 26, 26, 255),ColorGreen)
 	Add:Dock(LEFT)
 	Add:DockMargin(0,0,10,0)
 	Add.DoClick = function()
-		EditMode = false
-		ClearForm()
+		local Frame = vgui.Create("DFrame")
+		Frame:SetSize(560,600)
+		Frame:Center()
+		Frame:SetTitle(" ")
+		Frame:ShowCloseButton(false)
+		Frame:MakePopup()
+		Frame.Paint = function(self,w,h)
+			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+
+			surface.SetFont("MollyHeader")
+			surface.SetTextColor(ColorWhite)
+			surface.SetTextPos(30, 15)
+			surface.DrawText("Information")
+	
+			surface.SetFont("MollySubheader")
+			surface.SetTextColor(ColorBlue)
+			surface.SetTextPos(30, 52)
+			surface.DrawText("Now less uesfull!")
+		end
+
+		
+		local DLabel = vgui.Create( "DLabel", Frame )
+		DLabel:SetFont("MollyButton")
+		DLabel:SetTextColor(ColorWhite)
+		DLabel:SetText(Info)
+		DLabel:Dock(FILL)
+		DLabel:DockMargin(25,0,0,0)
+
+		local Menu = vgui.Create("DPanel",Frame)
+		Menu:Dock(BOTTOM)
+		Menu:SetSize(560,92)
+		Menu.Paint = function(self,w,h)
+			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+		end
+		
+		local Close = StyleButton(Menu,Material("icon16/cancel.png"),"Close",Color(26, 26, 26, 255),ColorRed)
+		Close:SetPos(413,20)
+		Close.DoClick = function()
+			Frame:Close()
+		end
 	end
 	
 	-- Delete button [Deletes the current title being edited]
