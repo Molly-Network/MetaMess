@@ -41,6 +41,7 @@ local GUITitle = "Title GUI"
 local Titles = {}
 local EditMode = false
 local ActiveLine = nil
+local DefaultTime = 4
 local Info = [[
 Heres some info to get you started on your title adventrue
 
@@ -353,7 +354,7 @@ concommand.Add("title_gui",function()
 	local DelayEntry,DelayMain = StyleTextEntry(EditPanel,EditPanelW-193,"Delay [Seconds]")
 	DelayMain:SetPos(25,92)
 	DelayEntry:SetNumeric(true)
-	DelayEntry:SetValue("4")
+	DelayEntry:SetValue(tostring(DefaultTime))
 	
 	-- Color mixer
 	local ColorMixer = vgui.Create("DColorMixer",EditPanel)
@@ -390,7 +391,7 @@ concommand.Add("title_gui",function()
 	
 	-- Clear function [resets all values and saves the current table to file]
 	local function ClearForm()
-		DelayEntry:SetValue("4")
+		DelayEntry:SetValue(tostring(DefaultTime))
 		TextEntry:SetValue("")
 		TitleListRefresh()
 		EditMode = false
@@ -635,10 +636,11 @@ concommand.Add("title_gui",function()
 				if EditMode then 
 					table.remove( Titles, ActiveLine) 
 					table.insert( Titles,ActiveLine, {[1] = TextEntry:GetValue(),[2] = DelayEntry:GetValue()} )
+					DefaultTime = DelayEntry:GetValue()
 				else
 					table.insert( Titles, {[1] = TextEntry:GetValue(),[2] = DelayEntry:GetValue()} )
+					DefaultTime = DelayEntry:GetValue()
 				end
-				
 				MollyNote(LoginPanel, "Added/Edited",ColorGreen )
 				ClearForm()
 				EditMode = false
