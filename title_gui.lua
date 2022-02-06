@@ -63,7 +63,7 @@ Stay Sussy - [Molly]Sherm#3332/DuckDuckGo
 local function SaveTable(filename)
 	local temp = util.TableToJSON( Titles )
 	file.Write(filename, temp)
-	hook.Run("Title_Updated")
+	hook.Run("Title_Updated", Titles)
 end
 
 -- read table function
