@@ -47,19 +47,20 @@ local ActiveLine = nil
 -- save to table function
 local function SaveTable(filename)
 	local temp = util.TableToJSON( Titles )
-	file.Write("meta_titles/" .. filename, temp)
+	file.Write(filename, temp)
 end
 
 -- read table function
 local function ReadTable(filename)
-	temp = file.Read( "meta_titles/" .. filename, "DATA" )
+	temp = file.Read( "meta_titles_cache/" .. filename, "DATA" )
 	Titles = util.JSONToTable( temp )
 end
 
 -- Checks if defulte file is in data folder, if not creates the file
-if file.Exists( "meta_titles/autoload.json", "DATA" ) == false then
+if file.Exists( "meta_titles_cache/autoload.json", "DATA" ) == false then
 	file.CreateDir( "meta_titles" )
-	SaveTable("autoload.json")
+	file.CreateDir( "meta_titles_cache" )
+	SaveTable("meta_titles_cache/autoload.json")
 end
 
 ReadTable("autoload.json")
@@ -177,8 +178,8 @@ end
 
 -- allows a user to add a title using commands, wont allow to set delay
 concommand.Add("title_add",function(ply, cmd, args)
-	table.insert( Titles, {[1] = table.concat(args),[2] = 1} )
-	SaveTable("autoload.json")
+	table.insert( Titles, {[1] = table.concat(args),[2] = 4} )
+	SaveTable("meta_titles_cache/autoload.json")
 end)
 
 -- creates con command to open the frame
@@ -285,6 +286,7 @@ concommand.Add("title_gui",function()
 		TitleList:Clear()
 		for k,v in ipairs(Titles) do
 			TitleList:AddLine(k,v[1],v[2])
+			TitleList.Lines[k]:SetTooltip(TitleList.Lines[k].Columns[2]:GetValue())
 			for i=1,3 do
 				TitleList.Lines[k].Columns[i]:SetTextColor(ColorWhite)
 			end
@@ -374,7 +376,7 @@ concommand.Add("title_gui",function()
 		TextEntry:SetValue("")
 		TitleListRefresh()
 		EditMode = false
-		SaveTable("autoload.json")
+		SaveTable("meta_titles_cache/autoload.json")
 	end
 	
 	-- Edit function [Gets selected line and set the delay and text forms, also enables edit mode]
@@ -407,7 +409,7 @@ concommand.Add("title_gui",function()
 	Save.DoClick = function()
 		local SButton,SText,SFrame = TextPopup()
 		SButton.DoClick = function()
-			SaveTable( string.Replace( string.lower( SText:GetValue() ), " ", "_" ) ..".json")
+			SaveTable( "meta_titles/" .. string.Replace( string.lower( SText:GetValue() ), " ", "_" ) ..".json")
 			MollyNote(LoginPanel, "Saved to " .. string.Replace( string.lower( SText:GetValue() ), " ", "_" ) ..".json",ColorGreen )
 			SFrame:Close()
 		end
@@ -438,7 +440,7 @@ concommand.Add("title_gui",function()
 			if  listfile ~= nil then
 				Titles = util.JSONToTable( file.Read(listfile, "DATA") )
 				MollyNote(LoginPanel, "Loaded " .. listfile ,ColorGreen )
-				SaveTable("autoload.json")
+				SaveTable("meta_titles_cache/autoload.json")
 				ClearForm()
 				Frame:Close()
 			end
@@ -493,7 +495,7 @@ concommand.Add("title_gui",function()
 	Clear.DoClick = function()
 		table.Empty( Titles )
 		TitleList:Clear()
-		SaveTable("autoload.json")
+		SaveTable("meta_titles_cache/autoload.json")
 		ClearForm()
 		MollyNote(LoginPanel, "Table Cleared",ColorBlue )
 	end
