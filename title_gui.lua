@@ -273,7 +273,8 @@ concommand.Add("title_gui",function()
 			draw.RoundedBoxEx(10,1,0,w,h,ColorBlue,true)
 		end
 	end
-	
+
+	TitleList.Columns[2]:SetWidth( 400 )
 	TitleList.Columns[2].Header.Paint = function(self,w,h)
 		if (self:IsDown()) then
 		    surface.SetDrawColor(ColorBlue)
