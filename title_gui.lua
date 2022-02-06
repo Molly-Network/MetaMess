@@ -137,19 +137,19 @@ end
 local function MollyNote(parent, text,color )
 	local LoginPanelW,LoginPanelH = parent:GetSize()
 	local Notification = vgui.Create("DPanel", parent)
-	Notification:SetSize(LoginPanelW, 55)
-	Notification:SetPos(0, LoginPanelH-55)
+	Notification:SetPos(90, LoginPanelH-55)
+	Notification:SetSize(LoginPanelW-180, 55)
 	Notification.Paint = function ( self,w,h )
-		draw.RoundedBoxEx(10, 90, 0, w-180, 55, color,true,true,false,false)
+		draw.RoundedBoxEx(10, 0, 0, w, 55, color,true,true,false,false)
 		draw.DrawText(text, "MollyButton", w/2, h/2-13, ColorWhite, TEXT_ALIGN_CENTER)
 	end
 
 	local AnimationUp = Derma_Anim("EaseInQuadUp", Notification , function(pnl, anim, delta, data)
-		pnl:SetPos(0, inQuad(delta, LoginPanelH, -55))
+		pnl:SetPos(90, inQuad(delta, LoginPanelH, -55))
 	end)
 
 	local AnimationDown = Derma_Anim("EaseInQuadDown", Notification , function(pnl, anim, delta, data)
-	pnl:SetPos(0, inQuad(delta, LoginPanelH-55, LoginPanelH))
+	pnl:SetPos(90, inQuad(delta, LoginPanelH-55, LoginPanelH))
 	end)
 
 	AnimationUp:Start(1)
