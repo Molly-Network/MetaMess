@@ -367,7 +367,7 @@ concommand.Add("title_gui",function()
 		local clr = ColorMixer:GetColor()
 		local temp = TextEntry:GetValue()
 		local left = string.Left(temp, CaretPos)
-		TextEntry:SetValue(left .. "<color=" .. clr.r .. "," .. clr.g .. "," .. clr.b .. ">" .. string.Replace(temp, left, ""))
+		TextEntry:SetValue(left .. "<c=" .. bit.tohex(clr.r,2) .. bit.tohex(clr.g,2).. bit.tohex(clr.b,2) .. ">" .. string.Replace(temp, left, ""))
 		TextEntry:RequestFocus()
 		TextEntry:SetCaretPos(string.len(TextEntry:GetValue()))
 	end
