@@ -555,7 +555,7 @@ concommand.Add("title_gui",function()
 	HeaderMenu:SetPos(25,20)
 	HeaderMenu.Paint = nil
 	
-	-- Add button [Clear form and resets edit staus to allow the user to add a new title]
+	-- Info button [Opens a window with some basic info to get the player started]
 	local Add = StyleButton(HeaderMenu,Material("icon16/information.png"),"Info",Color(26, 26, 26, 255),ColorGreen)
 	Add:Dock(LEFT)
 	Add:DockMargin(0,0,10,0)
@@ -677,7 +677,3 @@ list.Set(
 		end
 	}
 )
-
-if IsValid(g_ContextMenu) and CreateContextMenu then
-	CreateContextMenu()
-end 
