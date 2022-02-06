@@ -423,6 +423,7 @@ concommand.Add("title_gui",function()
 		TextEntry:SetValue("")
 		TitleListRefresh()
 		EditMode = false
+		TitleList.VBar:SetScroll(99999)
 		SaveTable("meta_titles_cache/autoload.json")
 	end
 	
