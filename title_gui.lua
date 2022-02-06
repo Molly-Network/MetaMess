@@ -72,15 +72,6 @@ local function ReadTable(filename)
 	Titles = util.JSONToTable( temp )
 end
 
--- Checks if defulte file is in data folder, if not creates the file
-if file.Exists( "meta_titles_cache/autoload.json", "DATA" ) == false then
-	file.CreateDir( "meta_titles" )
-	file.CreateDir( "meta_titles_cache" )
-	SaveTable("meta_titles_cache/autoload.json")
-end
-
-ReadTable("autoload.json")
-
 -- used for animation
 local function inQuad(fraction, beginning, change)
 	return change * (fraction ^ 2) + beginning
@@ -230,6 +221,15 @@ end)
 
 -- creates con command to open the frame
 concommand.Add("title_gui",function()
+	-- Checks if defulte file is in data folder, if not creates the file
+	if file.Exists( "meta_titles_cache/autoload.json", "DATA" ) == false then
+		file.CreateDir( "meta_titles" )
+		file.CreateDir( "meta_titles_cache" )
+		SaveTable("meta_titles_cache/autoload.json")
+	end
+
+	ReadTable("autoload.json")
+
 	-- added to prevent bug 
 	EditMode = false
 
