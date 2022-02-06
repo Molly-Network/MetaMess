@@ -29,9 +29,7 @@ surface.CreateFont("MollyHeader2", {
 
 -- Colors
 local ColorBlue = Color(0, 123, 255, 255)
-local ColorLightBlue = Color(24, 147, 240, 255)	
 local ColorRed = Color(220, 53, 69, 255)
-local ColorLightRed = Color(230, 60, 69, 255)
 local ColorGreen = Color(32, 201, 151, 255)
 local ColorWhite = Color(255, 255, 255, 255)
 local ColorOffGrey = Color(126, 130, 153, 255)
@@ -65,6 +63,7 @@ Stay Sussy - [Molly]Sherm#3332/DuckDuckGo
 local function SaveTable(filename)
 	local temp = util.TableToJSON( Titles )
 	file.Write(filename, temp)
+	hook.Run("Title_Updated")
 end
 
 -- read table function
