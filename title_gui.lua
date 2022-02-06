@@ -63,7 +63,6 @@ Stay Sussy - DuckDuckGo x Henke
 local function SaveTable(filename)
 	local temp = util.TableToJSON( Titles )
 	file.Write(filename, temp)
-	hook.Run("Title_Updated", Titles)
 end
 
 -- read table function
@@ -194,14 +193,16 @@ end
 
 -- allows a user to add a title using commands, wont allow to set delay
 concommand.Add("title_add",function(ply, cmd, args)
-	table.insert( Titles, {[1] = table.concat(args),[2] = 4} )
-	SaveTable("meta_titles_cache/autoload.json")
+		table.insert( Titles, {[1] = table.concat(args),[2] = 4} )
+		SaveTable("meta_titles_cache/autoload.json")
+		hook.Run("Title_Updated", Titles)
 end)
 
 -- creates con command to open the frame
 concommand.Add("title_gui",function()
 	-- added to prevent bug 
 	EditMode = false
+	hook.Run("Title_Opened")
 	
 	-- Main frame
 	local Frame = vgui.Create("DFrame")
@@ -658,6 +659,10 @@ concommand.Add("title_gui",function()
 	ClearChanges:Dock(RIGHT)
 	ClearChanges.DoClick = function()
 		ClearForm()
+	end
+
+	Frame.OnClose = function()
+		hook.Run("Title_Updated", Titles)
 	end
 end)
 
