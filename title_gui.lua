@@ -202,8 +202,7 @@ end)
 concommand.Add("title_gui",function()
 	-- added to prevent bug 
 	EditMode = false
-	hook.Run("Title_Opened")
-	
+
 	-- Main frame
 	local Frame = vgui.Create("DFrame")
 	Frame:SetSize(1120,680)
