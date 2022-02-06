@@ -193,6 +193,34 @@ local function TextPopup()
 	return Save,Text,Frame
 end
 
+-- Popup to make sure the user wants to get rid of there titles
+local function ConfirmPopup()
+	local Frame = vgui.Create("DFrame")
+	Frame:SetSize(500,92)
+	Frame:Center()
+	Frame:SetTitle(" ")
+	Frame:ShowCloseButton(false)
+	Frame:MakePopup()
+	Frame.Paint = function(self,w,h)
+		draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+		surface.SetFont("MollyHeader2")
+		surface.SetTextColor(ColorWhite)
+		surface.SetTextPos(23, 28)
+		surface.DrawText("Clear all titles?")
+	end
+	
+	local Yes = StyleButton(Frame,Material("icon16/tick.png"),"Yes",Color(26, 26, 26, 255),ColorBlue)
+	Yes:SetPos(209,20)
+	
+	local Close = StyleButton(Frame,Material("icon16/Cross.png"),"No",Color(26, 26, 26, 255),ColorRed)
+	Close:SetPos(352,20)
+	Close.DoClick = function()
+		Frame:Close()
+	end
+	
+	return Yes,Frame
+end
+
 -- allows a user to add a title using commands, wont allow to set delay
 concommand.Add("title_add",function(ply, cmd, args)
 		table.insert( Titles, {[1] = table.concat(args),[2] = 4} )
@@ -512,11 +540,15 @@ concommand.Add("title_gui",function()
 	local Clear = StyleButton(MainMenu,Material("icon16/cross.png"),"Clear",Color(37, 37, 37, 255),ColorRed)
 	Clear:Dock(RIGHT)
 	Clear.DoClick = function()
-		table.Empty( Titles )
-		TitleList:Clear()
-		SaveTable("meta_titles_cache/autoload.json")
-		ClearForm()
-		MollyNote(LoginPanel, "Table Cleared",ColorBlue )
+		local Yes,BaseFrame = ConfirmPopup()
+		Yes.DoClick = function()
+			table.Empty( Titles )
+			TitleList:Clear()
+			SaveTable("meta_titles_cache/autoload.json")
+			ClearForm()
+			MollyNote(LoginPanel, "Table Cleared",ColorBlue )
+			BaseFrame:Close()
+		end
 	end
 	
 	-- DListView double click check [Pushes the curent title to the form, also enables edit mode ]
@@ -622,13 +654,10 @@ concommand.Add("title_gui",function()
 	FooterMenu:SetSize(LoginPanelW-50,52)
 	FooterMenu:SetPos(25,LoginPanelH-69)
 	FooterMenu.Paint = nil
-	
-	-- Save changes button [Will push the form values to the table]
-	local SetChanges = StyleButton(FooterMenu,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
-	SetChanges:Dock(LEFT)
-	SetChanges.DoClick = function()
+
+	local function SaveFunc()
 		if tonumber(DelayEntry:GetValue()) < 0 then
-		MollyNote(LoginPanel, "Delay lower than 0",ColorRed )
+			MollyNote(LoginPanel, "Delay lower than 0",ColorRed )
 		else
 			if DelayEntry:GetValue() == "" or TextEntry:GetValue() == "" then
 				MollyNote(LoginPanel, "Invalid Input",ColorRed )
@@ -646,6 +675,22 @@ concommand.Add("title_gui",function()
 				EditMode = false
 			end
 		end
+	end
+	
+	-- Save changes button [Will push the form values to the table]
+	local SetChanges = StyleButton(FooterMenu,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
+	SetChanges:Dock(LEFT)
+	SetChanges.DoClick = function()
+		SaveFunc()
+	end
+
+	DelayEntry.OnEnter = function(self)
+		SaveFunc()
+	end
+
+	TextEntry.OnEnter = function(self)
+		SaveFunc()
+		self:SetText("")
 	end
 	
 	-- Close button [Closes main frame]
