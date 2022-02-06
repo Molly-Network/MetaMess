@@ -57,8 +57,6 @@ If you find any bugs or issues contact me on discord
 [Molly]Sherm#3332
 
 Stay Sussy - DuckDuckGo x Henke
-
-
 ]] 
 
 -- save to table function
@@ -587,7 +585,7 @@ concommand.Add("title_gui",function()
 		DLabel:SetTextColor(ColorWhite)
 		DLabel:SetText(Info)
 		DLabel:Dock(FILL)
-		DLabel:DockMargin(25,40,0,0)
+		DLabel:DockMargin(25,0,0,0)
 
 		local Menu = vgui.Create("DPanel",Frame)
 		Menu:Dock(BOTTOM)
