@@ -137,6 +137,7 @@ end
 local function MollyNote(parent, text,color )
 	local LoginPanelW,LoginPanelH = parent:GetSize()
 	local Notification = vgui.Create("DPanel", parent)
+	Notification:SetMouseInputEnabled(false)
 	Notification:SetPos(90, LoginPanelH-55)
 	Notification:SetSize(LoginPanelW-180, 55)
 	Notification.Paint = function ( self,w,h )
