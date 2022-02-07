@@ -218,6 +218,7 @@ concommand.Add("title_add",function(ply, cmd, args,test)
 		table.insert( Titles, {[1] = test,[2] = 4} )
 		SaveTable("meta_titles_cache/autoload.json")
 		hook.Run("Title_Updated", Titles)
+		print("Added title: " .. test)
 end)
 
 -- creates con command to open the frame
