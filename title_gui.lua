@@ -46,7 +46,7 @@ local Info = [[
 Heres some info to get you started on your title adventrue
 
 1. Right click on the list items for options.
-2. Double clicking list itmes will set them to edit mode.
+2. Double clicking list items will set them to edit mode.
 3. You can delete items by right clicking on them and pressing 
 delete or you could edit them then press the "Delete" button.
 4. You can add colors by selecting a color form the mixer and
