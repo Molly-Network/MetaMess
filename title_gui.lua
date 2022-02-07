@@ -621,7 +621,7 @@ concommand.Add("title_gui",function()
 			surface.SetFont("MollySubheader")
 			surface.SetTextColor(ColorBlue)
 			surface.SetTextPos(30, 52)
-			surface.DrawText("Now less uesfull!")
+			surface.DrawText("Now less usefull!")
 		end
 
 		
@@ -731,7 +731,7 @@ list.Set(
 	"DesktopWindows",
 	"Ttile GUI",
 	{
-		title = "Ttile GUI",
+		title = "Title GUI",
 		icon = icon,
 		init = function(icn, pnl)
 			pnl:Remove()
