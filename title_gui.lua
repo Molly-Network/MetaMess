@@ -213,8 +213,8 @@ local function ConfirmPopup()
 end
 
 -- allows a user to add a title using commands, wont allow to set delay
-concommand.Add("title_add",function(ply, cmd, args)
-		table.insert( Titles, {[1] = table.concat(args),[2] = 4} )
+concommand.Add("title_add",function(ply, cmd, args,test)
+		table.insert( Titles, {[1] = test,[2] = 4} )
 		SaveTable("meta_titles_cache/autoload.json")
 		hook.Run("Title_Updated", Titles)
 end)
@@ -434,6 +434,10 @@ concommand.Add("title_gui",function()
 		TextEntry:SetValue(Titles[Line][1])
 		DelayEntry:SetValue(Titles[Line][2])
 	end
+
+	local function CopyTitle(ID,Line)
+		SetClipboardText( Titles[Line][1] )
+	end
 	
 	-- Move function [Moves the selected titles postion]
 	local function MoveTitle(Current,Wanted)
@@ -573,6 +577,9 @@ concommand.Add("title_gui",function()
 	
 		Menu:AddSpacer()
 	
+		local Copy = Menu:AddOption( "Copy" , function() CopyTitle(ID,Line) end)
+		Copy:SetIcon( "icon16/page_copy.png" )
+		
 		local Edit = Menu:AddOption( "Edit" , function() EditTitle(ID,Line) end)
 		Edit:SetIcon( "icon16/page_edit.png" )
 		
