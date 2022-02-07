@@ -214,6 +214,7 @@ end
 
 -- allows a user to add a title using commands, wont allow to set delay
 concommand.Add("title_add",function(ply, cmd, args,test)
+		ReadTable("autoload.json")
 		table.insert( Titles, {[1] = test,[2] = 4} )
 		SaveTable("meta_titles_cache/autoload.json")
 		hook.Run("Title_Updated", Titles)
