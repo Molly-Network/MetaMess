@@ -693,6 +693,26 @@ concommand.Add("title_gui",function()
 	SetChanges.DoClick = function()
 		SaveFunc()
 	end
+	SetChanges.Paint = function(self,w,h)
+		-- Background
+		if (self:IsDown()) then
+			draw.RoundedBox(10,0,0,w,h,Color(26, 26, 26, 255))
+		elseif(self:IsHovered()) then
+			draw.RoundedBox(10,1,1,w-2,h-2,ColorBlue)
+		else
+			draw.RoundedBox(10,0,0,w,h,Color(26, 26, 26, 255))
+		end
+		-- Icon
+		surface.SetDrawColor(ColorWhite)
+		surface.SetMaterial(Material("icon16/page_go.png"))
+		surface.DrawTexturedRect(10,10,32,32)
+		--Text
+		if EditMode then
+			draw.SimpleText("Edit","MollyButton",w-48,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+		else
+			draw.SimpleText("Add","MollyButton",w-48,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+		end
+	end
 
 	DelayEntry.OnEnter = function(self)
 		SaveFunc()
