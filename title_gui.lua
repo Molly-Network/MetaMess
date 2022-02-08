@@ -621,7 +621,7 @@ concommand.Add("title_gui",function()
 			surface.SetFont("MollySubheader")
 			surface.SetTextColor(ColorBlue)
 			surface.SetTextPos(30, 52)
-			surface.DrawText("Now less usefull!")
+			surface.DrawText("Now less useful!")
 		end
 
 		
