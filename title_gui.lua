@@ -467,6 +467,7 @@ concommand.Add("title_gui",function()
 	local DelayEntry,DelayMain = StyleTextEntry(EditPanel,EditPanelW-126,"Delay [Seconds]")
 	DelayMain:SetPos(6,EditPanelH/2-21)
 	DelayEntry:SetNumeric(true)
+	DelayEntry:SetValue(tostring(DefaultTime))
 	
 	--  Color button [Adds a color tag to the end of the text entry ]
 	local ColorSelect = StyleButton(EditPanel)
