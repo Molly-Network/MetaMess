@@ -41,6 +41,9 @@ local ColorGreen = Color(32, 201, 151, 255)
 local ColorWhite = Color(255, 255, 255, 255)
 local ColorOffGrey = Color(126, 130, 153, 255)
 local ColorDarkRed = Color(255,0,0,100)
+local ColorDark = Color(32, 32, 32, 255)
+local ColorExtraDark = Color(26, 26, 26, 255)
+local ColorLightDark = Color(37, 37, 37, 255)
 
 -- Default values 
 local Version = "2.0.0"
@@ -134,7 +137,7 @@ local function StyleTextEntry(Perent,Width,Placeholder)
 	local Base = vgui.Create("DPanel",Perent)
 	Base:SetSize(Width,42)
 	Base.Paint = function(self,w,h)
-		draw.RoundedBox(10,0,0,w,h,Color(37, 37, 37, 255))
+		draw.RoundedBox(10,0,0,w,h,ColorLightDark)
 	end
 	
 	local x,y =Base:GetSize()
@@ -194,13 +197,13 @@ local function TextPopup()
 	Frame:ShowCloseButton(false)
 	Frame:MakePopup()
 	Frame.Paint = function(self,w,h)
-		draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+		draw.RoundedBox(10, 0, 0, w, h, ColorDark)
 	end
 	
 	local Text,Body = StyleTextEntry(Frame,245,"Filename")
 	Body:SetPos(6,32)
 	
-	local Save = StyleButton(Frame,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
+	local Save = StyleButton(Frame,Material("icon16/page_go.png"),"Save",ColorExtraDark,ColorBlue)
 	Save:SetPos(255,32)
 	
 	local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
@@ -221,14 +224,14 @@ local function ConfirmPopup()
 	Frame:ShowCloseButton(false)
 	Frame:MakePopup()
 	Frame.Paint = function(self,w,h)
-		draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+		draw.RoundedBox(10, 0, 0, w, h, ColorDark)
 		surface.SetFont("MollyHeader2")
 		surface.SetTextColor(ColorWhite)
 		surface.SetTextPos(6,31)
 		surface.DrawText("Clear all titles?")
 	end
 	
-	local Yes = StyleButton(Frame,Material("icon16/tick.png"),"Yes",Color(26, 26, 26, 255),ColorBlue)
+	local Yes = StyleButton(Frame,Material("icon16/tick.png"),"Yes",ColorExtraDark,ColorBlue)
 	Yes:SetPos(156,27)
 	
 	local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
@@ -283,8 +286,8 @@ concommand.Add("title_gui",function()
 		local VersionLength = surface.GetTextSize("Version ") + surface.GetTextSize(Version)
 	
 		-- Background
-		draw.RoundedBoxEx(10, 0, 0, w/2, h, Color(26, 26, 26, 255), true, false, true, false)
-		draw.RoundedBoxEx(10, w/2, 0, w/2, h, Color(37, 37, 37, 255), false, true, false, true)
+		draw.RoundedBoxEx(10, 0, 0, w/2, h, ColorExtraDark, true, false, true, false)
+		draw.RoundedBoxEx(10, w/2, 0, w/2, h, ColorLightDark, false, true, false, true)
 	
 		-- Header text
 		surface.SetFont("MollyHeader")
@@ -312,7 +315,7 @@ concommand.Add("title_gui",function()
 	Image:SetSize(FrameW/2-20, FrameH-110)
 	Image:SetPos(10, 55)
 	Image.Paint = function(self,w,h)
-		draw.RoundedBox(10, 0,0,w,h, Color(37, 37, 37, 255))
+		draw.RoundedBox(10, 0,0,w,h, ColorLightDark)
 	end
 	
 	-- DListView 
@@ -410,7 +413,7 @@ concommand.Add("title_gui",function()
 		Frame:ShowCloseButton(false)
 		Frame:MakePopup()
 		Frame.Paint = function(self,w,h)
-			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+			draw.RoundedBox(10, 0, 0, w, h, ColorDark)
 
 			surface.SetFont("MollyHeader")
 			surface.SetTextColor(ColorWhite)
@@ -445,7 +448,7 @@ concommand.Add("title_gui",function()
 	EditPanel:SetSize(LoginPanelW-20, LoginPanelH-100)
 	EditPanel:SetPos(10, 45)
 	EditPanel.Paint = function(self,w,h)
-		draw.RoundedBox(10, 0,0,w,h, Color(26, 26, 26, 255))
+		draw.RoundedBox(10, 0,0,w,h, ColorExtraDark)
 		draw.RoundedBox(10, 6,h/2+25,w-12,h/2-30, Color(37,37,37, 255))
 	end
 	
@@ -475,11 +478,11 @@ concommand.Add("title_gui",function()
 	ColorSelect.Paint = function(self,w,h)
 		-- Background
 		if (self:IsDown()) then
-			draw.RoundedBox(5,0,0,w,h,Color(37, 37, 37, 255))
+			draw.RoundedBox(5,0,0,w,h,ColorLightDark)
 		elseif(self:IsHovered()) then
 			draw.RoundedBox(10,1,1,w-2,h-2,ColorBlue)
 		else
-			draw.RoundedBox(10,0,0,w,h,Color(37, 37, 37, 255))
+			draw.RoundedBox(10,0,0,w,h,ColorLightDark)
 		end
 		draw.SimpleText("Colour","MollyButton",w-40,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
 	end
@@ -600,7 +603,7 @@ concommand.Add("title_gui",function()
 	MainMenu.Paint = nil
 	
 	-- Save as button [Allows the user to save the current table to a diffrent file, opens frame to input filename] 
-	local Save = StyleButton(MainMenu,Material("icon16/disk.png"),"Save As",Color(37, 37, 37, 255),ColorBlue)
+	local Save = StyleButton(MainMenu,Material("icon16/disk.png"),"Save As",ColorLightDark,ColorBlue)
 	Save:Dock(LEFT)
 	Save:DockMargin(0,0,4,0)
 	Save.DoClick = function()
@@ -622,7 +625,7 @@ concommand.Add("title_gui",function()
 		Frame:ShowCloseButton(false)
 		Frame:MakePopup()
 		Frame.Paint = function(self,w,h)
-			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+			draw.RoundedBox(10, 0, 0, w, h, ColorDark)
 		end
 
 		local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
@@ -655,13 +658,13 @@ concommand.Add("title_gui",function()
 		Menu:DockMargin(4,4,4,0)
 		Menu:SetSize(560,44)
 		Menu.Paint = function(self,w,h)
-			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+			draw.RoundedBox(10, 0, 0, w, h, ColorDark)
 		end
 		
 		local Text,Body = StyleTextEntry(Menu,269,"Search...")
 		Body:SetPos(0,0)
 		
-		local Save = StyleButton(Menu,Material("icon16/arrow_refresh.png"),"Update",Color(26, 26, 26, 255),ColorBlue)
+		local Save = StyleButton(Menu,Material("icon16/arrow_refresh.png"),"Update",ColorExtraDark,ColorBlue)
 		Save:SetPos(274,0)
 		Save.DoClick = function()
 			Files:UpdateFolders()
@@ -682,14 +685,14 @@ concommand.Add("title_gui",function()
 	end
 	
 	-- Load button [Opens the panel above]
-	local Load = StyleButton(MainMenu,Material("icon16/drive_go.png"),"Load",Color(37, 37, 37, 255),ColorBlue)
+	local Load = StyleButton(MainMenu,Material("icon16/drive_go.png"),"Load",ColorLightDark,ColorBlue)
 	Load:Dock(LEFT)
 	Load.DoClick = function()
 		LoadPanel()
 	end
 	
 	-- Clear button [Emptys form and table also epm]
-	local Clear = StyleButton(MainMenu,Material("icon16/cross.png"),"Clear",Color(37, 37, 37, 255),ColorRed)
+	local Clear = StyleButton(MainMenu,Material("icon16/cross.png"),"Clear",ColorLightDark,ColorRed)
 	Clear:Dock(RIGHT)
 	Clear.DoClick = function()
 		local Yes,BaseFrame = ConfirmPopup()
@@ -778,7 +781,7 @@ concommand.Add("title_gui",function()
 	end
 	
 	-- Save changes button [Will push the form values to the table]
-	local SetChanges = StyleButton(FooterMenu,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
+	local SetChanges = StyleButton(FooterMenu,Material("icon16/page_go.png"),"Save",ColorExtraDark,ColorBlue)
 	SetChanges:Dock(LEFT)
 	SetChanges.DoClick = function()
 		SaveFunc()
@@ -786,11 +789,11 @@ concommand.Add("title_gui",function()
 	SetChanges.Paint = function(self,w,h)
 		-- Background
 		if (self:IsDown()) then
-			draw.RoundedBox(10,0,0,w,h,Color(26, 26, 26, 255))
+			draw.RoundedBox(10,0,0,w,h,ColorExtraDark)
 		elseif(self:IsHovered()) then
 			draw.RoundedBox(10,1,1,w-2,h-2,ColorBlue)
 		else
-			draw.RoundedBox(10,0,0,w,h,Color(26, 26, 26, 255))
+			draw.RoundedBox(10,0,0,w,h,ColorExtraDark)
 		end
 		-- Icon
 		surface.SetDrawColor(ColorWhite)
@@ -809,7 +812,7 @@ concommand.Add("title_gui",function()
 	end
 	
 	-- Delete button [Deletes the current title being edited]
-	local Delete = StyleButton(FooterMenu,Material("icon16/delete.png"),"Delete",Color(26, 26, 26, 255),ColorRed)
+	local Delete = StyleButton(FooterMenu,Material("icon16/delete.png"),"Delete",ColorExtraDark,ColorRed)
 	Delete:Dock(RIGHT)
 	Delete:DockMargin(4,0,0,0)
 	Delete.DoClick = function()
@@ -823,7 +826,7 @@ concommand.Add("title_gui",function()
 	end
 	
 	-- Clear form button [Clears current settings form form, also resets edit status]
-	local ClearChanges = StyleButton(FooterMenu,Material("icon16/cross.png"),"Clear",Color(26, 26, 26, 255),ColorRed)
+	local ClearChanges = StyleButton(FooterMenu,Material("icon16/cross.png"),"Clear",ColorExtraDark,ColorRed)
 	ClearChanges:Dock(RIGHT)
 	ClearChanges.DoClick = function()
 		ClearForm()
