@@ -2,28 +2,35 @@
 surface.CreateFont("MollyHeader", {
 	font = "Segoe UI Black", 
 	extended = false,
-	size = 40,
+	size = 32,
 	weight = 500,
 })
 
 surface.CreateFont("MollySubheader", {
 	font = "Segoe UI Semilight", 
 	extended = false,
-	size = 23,
+	size = 20,
 	weight = 500,
 })
 
 surface.CreateFont("MollyButton", {
 	font = "Segoe UI Semilight", 
 	extended = false,
-	size = 24,
+	size = 20,
 	weight = 500,
 })
 
 surface.CreateFont("MollyHeader2", {
 	font = "Segoe UI Bold", 
 	extended = false,
-	size = 35,
+	size = 30,
+	weight = 500,
+})
+
+surface.CreateFont("MollySmallButton", {
+	font = "Segoe UI Semilight", 
+	extended = false,
+	size = 16,
 	weight = 500,
 })
 
@@ -33,11 +40,15 @@ local ColorRed = Color(220, 53, 69, 255)
 local ColorGreen = Color(32, 201, 151, 255)
 local ColorWhite = Color(255, 255, 255, 255)
 local ColorOffGrey = Color(126, 130, 153, 255)
+local ColorDarkRed = Color(255,0,0,100)
 
 -- Default values 
-local Version = "1.0.0"
+local Version = "2.0.0"
 local TimeStamp = "Sussy Edition"
 local GUITitle = "Title GUI"
+local mark = {}
+local lastText = ""
+local ColorCache = Color(255,192,203)
 local Titles = {}
 local EditMode = false
 local ActiveLine = nil
@@ -49,13 +60,10 @@ Heres some info to get you started on your title adventrue
 2. Double clicking list items will set them to edit mode.
 3. You can delete items by right clicking on them and pressing 
 delete or you could edit them then press the "Delete" button.
-4. You can add colors by selecting a color form the mixer and
-pressing on the "Colour" button.
+4. You can add a color by pressing on the colored square and
+selecting a color, then pressing the "Colour" Button
 5. You can load and save multiple title sets incase you want
 more than one set of titles.
-
-If you find any bugs or issues contact me on discord
-[Molly]Sherm#3332
 
 Stay Sussy - DuckDuckGo x Henke
 ]] 
@@ -80,7 +88,7 @@ end
 -- Custom icon buttons
 local function StyleButton(Perent,Icon,Text,ColorNormal,ColorHovered)
 	local Button = vgui.Create("DButton",Perent)
-	Button:SetSize(128,52)
+	Button:SetSize(110,42)
 	Button:SetText("")
 	Button.Paint = function(self,w,h)
 		-- Background
@@ -94,17 +102,37 @@ local function StyleButton(Perent,Icon,Text,ColorNormal,ColorHovered)
 		-- Icon
 		surface.SetDrawColor(ColorWhite)
 		surface.SetMaterial(Icon)
-		surface.DrawTexturedRect(10,10,32,32)
+		surface.DrawTexturedRect(9,9,24,24)
 		--Text
-		draw.SimpleText(Text,"MollyButton",w-48,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+		draw.SimpleText(Text,"MollyButton",w-40,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
 	end
 	return Button
+end
+
+-- Info and close buttons
+local function SmallButton(Perent,Text,ColorNormal,ColorHovered)
+	local ButtonMain = vgui.Create("DButton",Perent)
+	ButtonMain:SetSize(17,16)
+	ButtonMain:SetText("")
+	ButtonMain.Paint = function(self,w,h)
+		-- Background
+		if (self:IsDown()) then
+			draw.RoundedBox(4,0,0,w,h,ColorNormal)
+		elseif(self:IsHovered()) then
+			draw.RoundedBox(4,0,0,w,h,ColorHovered)
+		else
+			draw.RoundedBox(4,0,0,w,h,ColorNormal)
+		end
+		--Text
+		draw.SimpleText(Text,"MollySmallButton",w/2,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+	end
+	return ButtonMain
 end
 
 -- Custom text entry
 local function StyleTextEntry(Perent,Width,Placeholder)
 	local Base = vgui.Create("DPanel",Perent)
-	Base:SetSize(Width,52)
+	Base:SetSize(Width,42)
 	Base.Paint = function(self,w,h)
 		draw.RoundedBox(10,0,0,w,h,Color(37, 37, 37, 255))
 	end
@@ -160,7 +188,7 @@ end
 -- Text input function [Creates frame for save as function to get file name]
 local function TextPopup()
 	local Frame = vgui.Create("DFrame")
-	Frame:SetSize(560,92)
+	Frame:SetSize(370,82)
 	Frame:Center()
 	Frame:SetTitle(" ")
 	Frame:ShowCloseButton(false)
@@ -170,13 +198,13 @@ local function TextPopup()
 	end
 	
 	local Text,Body = StyleTextEntry(Frame,245,"Filename")
-	Body:SetPos(15,20)
+	Body:SetPos(6,32)
 	
 	local Save = StyleButton(Frame,Material("icon16/page_go.png"),"Save",Color(26, 26, 26, 255),ColorBlue)
-	Save:SetPos(274,20)
+	Save:SetPos(255,32)
 	
-	local Close = StyleButton(Frame,Material("icon16/cancel.png"),"Close",Color(26, 26, 26, 255),ColorRed)
-	Close:SetPos(413,20)
+	local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
+	Close:SetPos(Frame:GetWide()-24,6)
 	Close.DoClick = function()
 		Frame:Close()
 	end
@@ -187,7 +215,7 @@ end
 -- Popup to make sure the user wants to get rid of there titles
 local function ConfirmPopup()
 	local Frame = vgui.Create("DFrame")
-	Frame:SetSize(500,92)
+	Frame:SetSize(272,77)
 	Frame:Center()
 	Frame:SetTitle(" ")
 	Frame:ShowCloseButton(false)
@@ -196,21 +224,26 @@ local function ConfirmPopup()
 		draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
 		surface.SetFont("MollyHeader2")
 		surface.SetTextColor(ColorWhite)
-		surface.SetTextPos(23, 28)
+		surface.SetTextPos(6,31)
 		surface.DrawText("Clear all titles?")
 	end
 	
 	local Yes = StyleButton(Frame,Material("icon16/tick.png"),"Yes",Color(26, 26, 26, 255),ColorBlue)
-	Yes:SetPos(209,20)
+	Yes:SetPos(156,27)
 	
-	local Close = StyleButton(Frame,Material("icon16/Cross.png"),"No",Color(26, 26, 26, 255),ColorRed)
-	Close:SetPos(352,20)
+	local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
+	Close:SetPos(Frame:GetWide()-24,6)
 	Close.DoClick = function()
 		Frame:Close()
 	end
 	
 	return Yes,Frame
 end
+
+CreateClientConVar( "title_gui_size_w", 800,true,false,"Set Width of title gui",715)
+local ConWidth =  GetConVar( "title_gui_size_w" )
+CreateClientConVar( "title_gui_size_h", 550,true,false,"Set Hight of title gui",300)
+local ConHight =  GetConVar( "title_gui_size_h" )
 
 -- allows a user to add a title using commands, wont allow to set delay
 concommand.Add("title_add",function(ply, cmd, args,test)
@@ -237,11 +270,12 @@ concommand.Add("title_gui",function()
 
 	-- Main frame
 	local Frame = vgui.Create("DFrame")
-	Frame:SetSize(1120,680)
+	Frame:SetSize(ConWidth:GetInt(),ConHight:GetInt())
 	Frame:Center()
 	Frame:MakePopup()
 	Frame:SetTitle(" ")
 	Frame:ShowCloseButton(false)
+	Frame:SetSizable(true)
 	Frame.Paint = function ( self,w,h )
 	
 		surface.SetFont("MollySubheader")
@@ -255,28 +289,28 @@ concommand.Add("title_gui",function()
 		-- Header text
 		surface.SetFont("MollyHeader")
 		surface.SetTextColor(ColorWhite)
-		surface.SetTextPos(30, 15)
+		surface.SetTextPos(10, 6)
 		surface.DrawText(GUITitle)
 	
 		-- Version subheader
 		surface.SetFont("MollySubheader")
 		surface.SetTextColor(ColorBlue)
-		surface.SetTextPos(30, 52)
+		surface.SetTextPos(10, 32)
 		surface.DrawText("Version " .. Version)
 	
 		-- Timestamp subheader
 		surface.SetFont("MollySubheader")
 		surface.SetTextColor(Color(63, 66, 84, 255))
-		surface.SetTextPos(35 + VersionLength, 52)
+		surface.SetTextPos(15 + VersionLength, 32)
 		surface.DrawText(TimeStamp)
 	end
 	
 	local FrameW,FrameH = Frame:GetSize()
-	
+
 	-- Main panel for DListView
 	local Image = vgui.Create("DPanel", Frame)
-	Image:SetSize(FrameW/2-50, FrameH-170)
-	Image:SetPos(25, 85)
+	Image:SetSize(FrameW/2-20, FrameH-110)
+	Image:SetPos(10, 55)
 	Image.Paint = function(self,w,h)
 		draw.RoundedBox(10, 0,0,w,h, Color(37, 37, 37, 255))
 	end
@@ -284,6 +318,7 @@ concommand.Add("title_gui",function()
 	-- DListView 
 	local TitleList = vgui.Create( "DListView", Image )
 	TitleList:Dock(FILL)
+	TitleList:DockMargin(0,0,-1,0)
 	TitleList:SetMultiSelect(false)
 	TitleList:AddColumn("Position")
 	TitleList:AddColumn("Text")
@@ -306,7 +341,7 @@ concommand.Add("title_gui",function()
 		end
 	end
 
-	TitleList.Columns[2]:SetWidth( 400 )
+	TitleList.Columns[2]:SetWidth( 250 )
 	TitleList.Columns[2].Header.Paint = function(self,w,h)
 		if (self:IsDown()) then
 		    surface.SetDrawColor(ColorBlue)
@@ -322,15 +357,15 @@ concommand.Add("title_gui",function()
 	
 	TitleList.Columns[3].Header.Paint = function(self,w,h)
 		if (self:IsDown()) then
-			draw.RoundedBoxEx(10,1,0,w,h,ColorBlue,false,true)
+			draw.RoundedBoxEx(10,1,0,w-1,h,ColorBlue,false,true)
 		elseif(self:IsHovered()) then
-			draw.RoundedBoxEx(10,1,0,w,h,ColorOffGrey,false,true)
+			draw.RoundedBoxEx(10,1,0,w-1,h,ColorOffGrey,false,true)
 		else
-			draw.RoundedBoxEx(10,1,0,w-2,h,ColorBlue,false,true)
+			draw.RoundedBoxEx(10,1,0,w-1,h,ColorBlue,false,true)
 		end
 	end
 	
-	-- title refresh function [Delets and readds the title to DlistView] 
+	-- title refresh function [Delets and reads the title to DlistView] 
 	local function TitleListRefresh()
 		TitleList:Clear()
 		for k,v in ipairs(Titles) do
@@ -346,77 +381,184 @@ concommand.Add("title_gui",function()
 
 	-- main panle of the right	
 	local LoginPanel = vgui.Create("DPanel", Frame)
-	LoginPanel:SetSize(FrameW/2, FrameH)
-	LoginPanel:SetPos(FrameW/2, 00)
+	LoginPanel:SetSize(FrameW/2, FrameH-10)
+	LoginPanel:SetPos(FrameW/2, 10)
 	LoginPanel.Paint = function (self,w,h)
 		if EditMode then
-		draw.DrawText("Editing Line " .. ActiveLine, "MollyHeader2", w-30, 15, ColorWhite, TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER)
-		draw.DrawText("Use the options to edit the title", "MollyButton", w-30, 48, ColorOffGrey, TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER)
+		draw.DrawText("Editing Line " .. ActiveLine, "MollyHeader2", 10, -4, ColorWhite)
+		draw.DrawText("Use the options to edit the title", "MollyButton", 10, 22, ColorOffGrey)
 		else
-		draw.DrawText("Add a Title", "MollyHeader2", w-30, 15, ColorWhite, TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER)
-		draw.DrawText("Use the options to create a title", "MollyButton", w-30, 48, ColorOffGrey, TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER)
+		draw.DrawText("Add a Title", "MollyHeader2", 10, -4, ColorWhite)
+		draw.DrawText("Use the options to create a title", "MollyButton", 10, 22, ColorOffGrey)
 		end
-		
+	end
+
+	local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
+	Close:SetPos(FrameW-24,6)
+	Close.DoClick = function()
+		Frame:Close()
 	end
 	
+	-- Information button [Opens a frame with information on how to use the panel]
+	local InfoButton = SmallButton(Frame,"?",ColorBlue,Color(80,150,255,100))
+	InfoButton:SetPos(FrameW-44,6)
+	InfoButton.DoClick = function()
+		local Frame = vgui.Create("DFrame")
+		Frame:SetSize(450,350)
+		Frame:Center()
+		Frame:SetTitle(" ")
+		Frame:ShowCloseButton(false)
+		Frame:MakePopup()
+		Frame.Paint = function(self,w,h)
+			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+
+			surface.SetFont("MollyHeader")
+			surface.SetTextColor(ColorWhite)
+			surface.SetTextPos(10, 6)
+			surface.DrawText("Information")
+	
+			surface.SetFont("MollySubheader")
+			surface.SetTextColor(ColorBlue)
+			surface.SetTextPos(10, 30)
+			surface.DrawText("Now less useful!")
+		end
+		
+		local DLabel = vgui.Create( "DLabel", Frame )
+		DLabel:SetFont("MollyButton")
+		DLabel:SetTextColor(ColorWhite)
+		DLabel:SetText(Info)
+		DLabel:Dock(FILL)
+		DLabel:DockMargin(8,30,0,0)
+
+		local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
+		Close:SetPos(Frame:GetWide()-24,6)
+		Close.DoClick = function()
+			Frame:Close()
+		end
+
+	end
+
 	local LoginPanelW,LoginPanelH = LoginPanel:GetSize()
 	
 	-- creates the panle on the right
 	local EditPanel = vgui.Create("DPanel", LoginPanel)
-	EditPanel:SetSize(LoginPanelW-50, LoginPanelH-170)
-	EditPanel:SetPos(25, 85)
+	EditPanel:SetSize(LoginPanelW-20, LoginPanelH-100)
+	EditPanel:SetPos(10, 45)
 	EditPanel.Paint = function(self,w,h)
 		draw.RoundedBox(10, 0,0,w,h, Color(26, 26, 26, 255))
-		draw.RoundedBox(10, 25,h-77,w-50,52, Color(37,37,37, 255))
+		draw.RoundedBox(10, 6,h/2+25,w-12,h/2-30, Color(37,37,37, 255))
 	end
 	
 	local EditPanelW,EditPanelH = EditPanel:GetSize()
 	
 	local CaretPos = nil
 	-- Text entry [used to set the title text]
-	local TextEntry,TextMain = StyleTextEntry(EditPanel,EditPanelW-50,"Title Text")
-	TextMain:SetPos(25,25)
+	local TextEntry,TextMain = StyleTextEntry(EditPanel,EditPanelW-12,"Title Text")
+	TextMain:SetPos(6,6)
+	TextMain:SetSize(EditPanelW-12,EditPanelH/2-31)
+	local XEntry,YEntry = TextMain:GetSize()
+	TextEntry:SetSize(XEntry-20,YEntry-20)
+	TextEntry:SetMultiline(true)
 	TextEntry.OnLoseFocus = function( self )
 		CaretPos = self:GetCaretPos()
 	end
 	
 	-- Delay entry [locked to numerical used to input delay] 
-	local DelayEntry,DelayMain = StyleTextEntry(EditPanel,EditPanelW-193,"Delay [Seconds]")
-	DelayMain:SetPos(25,92)
+	local DelayEntry,DelayMain = StyleTextEntry(EditPanel,EditPanelW-126,"Delay [Seconds]")
+	DelayMain:SetPos(6,EditPanelH/2-21)
 	DelayEntry:SetNumeric(true)
-	DelayEntry:SetValue(tostring(DefaultTime))
-	
-	-- Color mixer
-	local ColorMixer = vgui.Create("DColorMixer",EditPanel)
-	ColorMixer:SetAlphaBar(false) 	
-	ColorMixer:SetSize(EditPanelW-50,255)
-	ColorMixer:SetPos(25,159)
 	
 	--  Color button [Adds a color tag to the end of the text entry ]
-	local ColorSelect = StyleButton(EditPanel,Material("icon16/color_wheel.png"),"Colour",Color(37, 37, 37, 255),ColorBlue)
-	ColorSelect:SetPos(EditPanelW-153,92)
+	local ColorSelect = StyleButton(EditPanel)
+	ColorSelect:SetPos(EditPanelW-116,EditPanelH/2-21)
+	ColorSelect.Paint = function(self,w,h)
+		-- Background
+		if (self:IsDown()) then
+			draw.RoundedBox(5,0,0,w,h,Color(37, 37, 37, 255))
+		elseif(self:IsHovered()) then
+			draw.RoundedBox(10,1,1,w-2,h-2,ColorBlue)
+		else
+			draw.RoundedBox(10,0,0,w,h,Color(37, 37, 37, 255))
+		end
+		draw.SimpleText("Colour","MollyButton",w-40,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+	end
+
+	local ColorPicker = vgui.Create("DButton",ColorSelect)
+	ColorPicker:SetSize(24,24)
+	ColorPicker:SetPos(9,9)
+	ColorPicker:SetText("")
+	ColorPicker.Paint = function (self,w,h)
+		draw.RoundedBox(5,0,0,w,h,ColorCache)
+	end
+
+	ColorPicker.DoClick = function()
+		Menu = DermaMenu()
+		Menu.Paint = nil
+
+		local ColorMixerBase = vgui.Create("DPanel",Menu)
+		ColorMixerBase:SetSize(200,200)
+		ColorMixerBase.Paint = function(self,w,h)
+			draw.RoundedBox(10,0,0,w,h,Color(25, 25, 25, 255))
+		end
+
+		local Mixer = vgui.Create("DColorMixer", ColorMixerBase)
+		Mixer:Dock(FILL)
+		Mixer:DockMargin(10,10,10,10)
+		Mixer:SetPalette(false)
+		Mixer:SetAlphaBar(false)	
+		Mixer:SetColor(ColorCache)
+		Mixer.WangsPanel:Dock(BOTTOM)
+		Mixer.WangsPanel:DockMargin( 0, 0, 0, 0 )
+		Mixer.txtR:Dock(LEFT)
+		Mixer.txtR:DockMargin( 0, 4, 4, 0 )
+		Mixer.txtR:SetSize(57,0)
+		Mixer.txtG:Dock(LEFT)
+		Mixer.txtG:DockMargin( 0, 4, 4, 0 )
+		Mixer.txtG:SetSize(57,0)
+		Mixer.txtB:Dock(LEFT)
+		Mixer.txtB:DockMargin( 0, 4, 0, 0 )
+		Mixer.txtB:SetSize(58,0)
+
+		Mixer.ValueChanged = function()
+			local ColorVal = Mixer:GetColor()
+			ColorCache = ColorVal
+		end
+
+		Menu:AddPanel(ColorMixerBase)
+		Menu:Open()
+	end	
+
 	ColorSelect.DoClick = function()
-		local clr = ColorMixer:GetColor()
 		local temp = TextEntry:GetValue()
 		local left = string.Left(temp, CaretPos)
-		TextEntry:SetValue(left .. "<c=" .. bit.tohex(clr.r,2) .. bit.tohex(clr.g,2).. bit.tohex(clr.b,2) .. ">" .. string.Replace(temp, left, ""))
+		TextEntry:SetValue(left .. "<c=" .. bit.tohex(ColorCache.r,2) .. bit.tohex(ColorCache.g,2).. bit.tohex(ColorCache.b,2) .. ">" .. string.Replace(temp, left, ""))
 		TextEntry:RequestFocus()
 		TextEntry:SetCaretPos(string.len(TextEntry:GetValue()))
 	end
 	
-	-- Example draw [Uses easychat markup to show the user what the title would look like ingame]
+	-- Example draw [Uses markup to show the user what the title would look like ingame]
 	local ExamplePanel = vgui.Create("DPanel",EditPanel)
-	ExamplePanel:SetSize(EditPanelW-50,52)
-	ExamplePanel:SetPos(10,EditPanelH-72)
+	ExamplePanel:SetSize(EditPanelW-30,EditPanelH/2-30)
+	ExamplePanel:SetPos(15,EditPanelH/2+25)
 	ExamplePanel.Paint = function(self,w,h)
-			local Markup = ec_markup.AdvancedParse(TextEntry:GetValue(), {
-			default_color = Color(255,255,255),
-			default_font = "MollyHeader2",
-			shadow_intensity = 0,
-		})
-	
-		Markup:SetPos(30,h-50)
-		Markup:Draw()
+		local txt = TextEntry:GetValue()
+	    if not mark[txt] then
+
+	        mark[lastText] = nil
+	        lastText = txt
+
+	        mark[txt] = meta_markup.AdvancedParse(txt, {
+				default_color = ColorWhite ,
+	            default_font = "MollyHeader2",
+				no_shadow = true,
+				maxwidth = w-5,
+	        })
+	    end
+
+	    surface.SetDrawColor(ColorWhite)
+	    surface.SetTextColor(ColorWhite)
+
+	    mark[txt]:Draw(1,0)
 	end
 	
 	-- Clear function [resets all values and saves the current table to file]
@@ -452,14 +594,14 @@ concommand.Add("title_gui",function()
 	
 	-- Menu panel [Houses saveas,load and clear buttons]
 	local MainMenu = vgui.Create("DPanel", Frame)
-	MainMenu:SetSize(FrameW/2-50,52)
-	MainMenu:SetPos(25, FrameH-69)
+	MainMenu:SetSize(FrameW/2-20,42)
+	MainMenu:SetPos(10, FrameH-50)
 	MainMenu.Paint = nil
 	
 	-- Save as button [Allows the user to save the current table to a diffrent file, opens frame to input filename] 
 	local Save = StyleButton(MainMenu,Material("icon16/disk.png"),"Save As",Color(37, 37, 37, 255),ColorBlue)
 	Save:Dock(LEFT)
-	Save:DockMargin(0,0,10,0)
+	Save:DockMargin(0,0,4,0)
 	Save.DoClick = function()
 		local SButton,SText,SFrame = TextPopup()
 		SButton.DoClick = function()
@@ -473,13 +615,20 @@ concommand.Add("title_gui",function()
 	local function LoadPanel()
 		
 		local Frame = vgui.Create("DFrame")
-		Frame:SetSize(560,600)
+		Frame:SetSize(400,350)
 		Frame:Center()
 		Frame:SetTitle(" ")
 		Frame:ShowCloseButton(false)
 		Frame:MakePopup()
 		Frame.Paint = function(self,w,h)
 			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
+		end
+
+		local Close = SmallButton(Frame,"X",ColorRed,ColorDarkRed)
+		Close:SetPos(Frame:GetWide()-24,6)
+		Close.DoClick = function()
+
+			Frame:Close()
 		end
 		
 		local Files = vgui.Create("wire_expression2_browser", Frame)
@@ -488,7 +637,7 @@ concommand.Add("title_gui",function()
 		Files.Folders.Paint = function(self,w,h)
 			draw.RoundedBox(10, 0, 0, w, h, Color(27,27,27, 255))
 		end
-		Files.Folders:DockMargin(15,0,9,0)
+		Files.Folders:DockMargin(3,0,2,0)
 
 		Files.OnFileOpen = function(panel, listfile) -- panle function un-used
 			if  listfile ~= nil then
@@ -502,24 +651,19 @@ concommand.Add("title_gui",function()
 		
 		local Menu = vgui.Create("DPanel",Frame)
 		Menu:Dock(BOTTOM)
-		Menu:SetSize(560,92)
+		Menu:DockMargin(4,4,4,0)
+		Menu:SetSize(560,44)
 		Menu.Paint = function(self,w,h)
 			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
 		end
 		
-		local Text,Body = StyleTextEntry(Menu,245,"Search...")
-		Body:SetPos(15,20)
+		local Text,Body = StyleTextEntry(Menu,269,"Search...")
+		Body:SetPos(0,0)
 		
 		local Save = StyleButton(Menu,Material("icon16/arrow_refresh.png"),"Update",Color(26, 26, 26, 255),ColorBlue)
-		Save:SetPos(274,20)
+		Save:SetPos(274,0)
 		Save.DoClick = function()
 			Files:UpdateFolders()
-		end
-		
-		local Close = StyleButton(Menu,Material("icon16/cancel.png"),"Close",Color(26, 26, 26, 255),ColorRed)
-		Close:SetPos(413,20)
-		Close.DoClick = function()
-			Frame:Close()
 		end
 		
 		Text.OnEnter = function()
@@ -576,6 +720,16 @@ concommand.Add("title_gui",function()
 		MoveTitle(Line,Line+1) 
 		ClearForm() end)
 		Down:SetIcon( "icon16/arrow_down.png" )
+
+		local UpToTop = Menu:AddOption( "Move Top" ,function() 
+			MoveTitle(Line,1) 
+			ClearForm() end)
+		UpToTop:SetIcon( "icon16/arrow_up.png" )
+
+		local DownToBottom = Menu:AddOption( "Move Bottom", function() 
+			table.insert( Titles, table.remove( Titles, Line))
+			ClearForm() end)
+		DownToBottom:SetIcon( "icon16/arrow_down.png" )
 	
 		Menu:AddSpacer()
 	
@@ -592,85 +746,20 @@ concommand.Add("title_gui",function()
 		
 		Menu:Open()
 	end
-	
-	-- Header Panel [Holds the add and delete buttons]
-	local HeaderMenu = vgui.Create("DPanel",LoginPanel)
-	HeaderMenu:SetSize(LoginPanelW-50,52)
-	HeaderMenu:SetPos(25,20)
-	HeaderMenu.Paint = nil
-	
-	-- Info button [Opens a window with some basic info to get the player started]
-	local Add = StyleButton(HeaderMenu,Material("icon16/information.png"),"Info",Color(26, 26, 26, 255),ColorGreen)
-	Add:Dock(LEFT)
-	Add:DockMargin(0,0,10,0)
-	Add.DoClick = function()
-		local Frame = vgui.Create("DFrame")
-		Frame:SetSize(560,600)
-		Frame:Center()
-		Frame:SetTitle(" ")
-		Frame:ShowCloseButton(false)
-		Frame:MakePopup()
-		Frame.Paint = function(self,w,h)
-			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
 
-			surface.SetFont("MollyHeader")
-			surface.SetTextColor(ColorWhite)
-			surface.SetTextPos(30, 15)
-			surface.DrawText("Information")
-	
-			surface.SetFont("MollySubheader")
-			surface.SetTextColor(ColorBlue)
-			surface.SetTextPos(30, 52)
-			surface.DrawText("Now less useful!")
-		end
-
-		
-		local DLabel = vgui.Create( "DLabel", Frame )
-		DLabel:SetFont("MollyButton")
-		DLabel:SetTextColor(ColorWhite)
-		DLabel:SetText(Info)
-		DLabel:Dock(FILL)
-		DLabel:DockMargin(25,0,0,0)
-
-		local Menu = vgui.Create("DPanel",Frame)
-		Menu:Dock(BOTTOM)
-		Menu:SetSize(560,92)
-		Menu.Paint = function(self,w,h)
-			draw.RoundedBox(10, 0, 0, w, h, Color(32, 32, 32, 255))
-		end
-		
-		local Close = StyleButton(Menu,Material("icon16/cancel.png"),"Close",Color(26, 26, 26, 255),ColorRed)
-		Close:SetPos(413,20)
-		Close.DoClick = function()
-			Frame:Close()
-		end
-	end
-	
-	-- Delete button [Deletes the current title being edited]
-	local Delete = StyleButton(HeaderMenu,Material("icon16/delete.png"),"Delete",Color(26, 26, 26, 255),ColorRed)
-	Delete:Dock(LEFT)
-	Delete.DoClick = function()
-		if EditMode then
-			table.remove( Titles, ActiveLine)
-			ClearForm() 
-			MollyNote(LoginPanel, "Title Deleted",ColorBlue )
-		else
-			MollyNote(LoginPanel, "No Title Selected",ColorRed )
-		end
-	end
-	
 	-- Footer panel [Houses the close, save and clear bttons]
 	local FooterMenu = vgui.Create("DPanel",LoginPanel)
-	FooterMenu:SetSize(LoginPanelW-50,52)
-	FooterMenu:SetPos(25,LoginPanelH-69)
+	FooterMenu:SetSize(LoginPanelW-20,42)
+	FooterMenu:SetPos(10, LoginPanelH-50)
+	
 	FooterMenu.Paint = nil
 
 	local function SaveFunc()
-		if tonumber(DelayEntry:GetValue()) < 0 then
-			MollyNote(LoginPanel, "Delay lower than 0",ColorRed )
+		if DelayEntry:GetValue() == "" or TextEntry:GetValue() == "" then
+			MollyNote(LoginPanel, "Invalid Input",ColorRed )
 		else
-			if DelayEntry:GetValue() == "" or TextEntry:GetValue() == "" then
-				MollyNote(LoginPanel, "Invalid Input",ColorRed )
+			if tonumber(DelayEntry:GetValue()) < 0 then
+				MollyNote(LoginPanel, "Delay lower than 0",ColorRed )
 			else
 				if EditMode then 
 					table.remove( Titles, ActiveLine) 
@@ -705,30 +794,31 @@ concommand.Add("title_gui",function()
 		-- Icon
 		surface.SetDrawColor(ColorWhite)
 		surface.SetMaterial(Material("icon16/page_go.png"))
-		surface.DrawTexturedRect(10,10,32,32)
+		surface.DrawTexturedRect(9,9,24,24)
 		--Text
 		if EditMode then
-			draw.SimpleText("Edit","MollyButton",w-48,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+			draw.SimpleText("Edit","MollyButton",w-40,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
 		else
-			draw.SimpleText("Add","MollyButton",w-48,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
+			draw.SimpleText("Add","MollyButton",w-40,h/2,ColorWhite,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
 		end
 	end
 
 	DelayEntry.OnEnter = function(self)
 		SaveFunc()
 	end
-
-	TextEntry.OnEnter = function(self)
-		SaveFunc()
-		self:SetText("")
-	end
 	
-	-- Close button [Closes main frame]
-	local Close = StyleButton(FooterMenu,Material("icon16/cancel.png"),"Close",Color(26, 26, 26, 255),ColorRed)
-	Close:Dock(RIGHT)
-	Close:DockMargin(10,0,0,0)
-	Close.DoClick = function()
-		Frame:Close()
+	-- Delete button [Deletes the current title being edited]
+	local Delete = StyleButton(FooterMenu,Material("icon16/delete.png"),"Delete",Color(26, 26, 26, 255),ColorRed)
+	Delete:Dock(RIGHT)
+	Delete:DockMargin(4,0,0,0)
+	Delete.DoClick = function()
+		if EditMode then
+			table.remove( Titles, ActiveLine)
+			ClearForm() 
+			MollyNote(LoginPanel, "Title Deleted",ColorBlue )
+		else
+			MollyNote(LoginPanel, "No Title Selected",ColorRed )
+		end
 	end
 	
 	-- Clear form button [Clears current settings form form, also resets edit status]
