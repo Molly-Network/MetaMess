@@ -450,7 +450,7 @@ concommand.Add("title_gui",function()
 	EditPanel:SetPos(10, 45)
 	EditPanel.Paint = function(self,w,h)
 		draw.RoundedBox(10, 0,0,w,h, ColorExtraDark)
-		draw.RoundedBox(10, 6,h/2+25,w-12,h/2-30, ColorLightDar)
+		draw.RoundedBox(10, 6,h/2+25,w-12,h/2-30, ColorLightDark)
 	end
 	
 	local EditPanelW,EditPanelH = EditPanel:GetSize()
@@ -787,7 +787,7 @@ concommand.Add("title_gui",function()
 	SetChanges.DoClick = function()
 		SaveFunc()
 	end
-	local AddMat = (Material("icon16/page_go.png")
+	local AddMat = (Material("icon16/page_go.png"))
 	SetChanges.Paint = function(self,w,h)
 		-- Background
 		if (self:IsDown()) then
