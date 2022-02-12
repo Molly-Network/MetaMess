@@ -279,6 +279,7 @@ concommand.Add("title_gui",function()
 	Frame:SetTitle(" ")
 	Frame:ShowCloseButton(false)
 	Frame:SetSizable(true)
+	local ColorOffGery = Color(63, 66, 84, 255)
 	Frame.Paint = function ( self,w,h )
 	
 		surface.SetFont("MollySubheader")
@@ -303,7 +304,7 @@ concommand.Add("title_gui",function()
 	
 		-- Timestamp subheader
 		surface.SetFont("MollySubheader")
-		surface.SetTextColor(Color(63, 66, 84, 255))
+		surface.SetTextColor(ColorOffGery)
 		surface.SetTextPos(15 + VersionLength, 32)
 		surface.DrawText(TimeStamp)
 	end
@@ -449,7 +450,7 @@ concommand.Add("title_gui",function()
 	EditPanel:SetPos(10, 45)
 	EditPanel.Paint = function(self,w,h)
 		draw.RoundedBox(10, 0,0,w,h, ColorExtraDark)
-		draw.RoundedBox(10, 6,h/2+25,w-12,h/2-30, Color(37,37,37, 255))
+		draw.RoundedBox(10, 6,h/2+25,w-12,h/2-30, ColorLightDar)
 	end
 	
 	local EditPanelW,EditPanelH = EditPanel:GetSize()
@@ -502,7 +503,7 @@ concommand.Add("title_gui",function()
 		local ColorMixerBase = vgui.Create("DPanel",Menu)
 		ColorMixerBase:SetSize(200,200)
 		ColorMixerBase.Paint = function(self,w,h)
-			draw.RoundedBox(10,0,0,w,h,Color(25, 25, 25, 255))
+			draw.RoundedBox(10,0,0,w,h,ColorExtraDark)
 		end
 
 		local Mixer = vgui.Create("DColorMixer", ColorMixerBase)
@@ -639,7 +640,7 @@ concommand.Add("title_gui",function()
 		Files:Setup("meta_titles")
 		Files:Dock(FILL)
 		Files.Folders.Paint = function(self,w,h)
-			draw.RoundedBox(10, 0, 0, w, h, Color(27,27,27, 255))
+			draw.RoundedBox(10, 0, 0, w, h, ColorExtraDark)
 		end
 		Files.Folders:DockMargin(3,0,2,0)
 
@@ -786,6 +787,7 @@ concommand.Add("title_gui",function()
 	SetChanges.DoClick = function()
 		SaveFunc()
 	end
+	local AddMat = (Material("icon16/page_go.png")
 	SetChanges.Paint = function(self,w,h)
 		-- Background
 		if (self:IsDown()) then
@@ -797,7 +799,7 @@ concommand.Add("title_gui",function()
 		end
 		-- Icon
 		surface.SetDrawColor(ColorWhite)
-		surface.SetMaterial(Material("icon16/page_go.png"))
+		surface.SetMaterial(AddMat)
 		surface.DrawTexturedRect(9,9,24,24)
 		--Text
 		if EditMode then
