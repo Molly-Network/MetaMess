@@ -5,32 +5,10 @@ local ColorBlue = Color(0, 123, 255, 255)
 local ColorRed = Color(220, 53, 69, 255)
 local ColorOrange = Color(255, 128, 0)
 
-
-surface.CreateFont("MollyHeader", {
-	font = "Segoe UI Black", 
-	extended = false,
-	size = 100,
-	weight = 500,
-})
-
-surface.CreateFont("MollySubheader", {
-	font = "Segoe UI Semilight", 
-	extended = false,
-	size = 50,
-	weight = 500,
-})
-
 surface.CreateFont("MollyPlayer", {
 	font = "Segoe UI Semilight", 
 	extended = false,
 	size = 16,
-	weight = 500,
-})
-
-surface.CreateFont("MollyGraph", {
-	font = "Segoe UI Semilight", 
-	extended = false,
-	size = 20,
 	weight = 500,
 })
 
