@@ -84,3 +84,7 @@ concommand.Add("say_weather_wh", function( ply, cmd, args )
 		LocalPlayer():Say(WeatherText)
 	end)
 end)                                                                              
+
+concommand.Add("say_weather_image", function( ply, cmd, args )
+	LocalPlayer():Say("https://wttr.in/" .. args[1] .. "_tqp0.png")
+end)
