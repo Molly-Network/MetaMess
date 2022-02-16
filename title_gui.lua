@@ -472,6 +472,10 @@ concommand.Add("title_gui",function()
 	DelayMain:SetPos(6,EditPanelH/2-21)
 	DelayEntry:SetNumeric(true)
 	DelayEntry:SetValue(tostring(DefaultTime))
+	DelayMain.Paint = function(self,w,h)
+		draw.RoundedBox(10,0,0,w,h,ColorLightDark)
+		draw.SimpleText("Delay","MollyButton",w-10,h/2,ColorOffGrey,TEXT_ALIGN_RIGHT,TEXT_ALIGN_CENTER)
+	end
 	
 	--  Color button [Adds a color tag to the end of the text entry ]
 	local ColorSelect = StyleButton(EditPanel)
