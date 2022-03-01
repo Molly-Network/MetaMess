@@ -46,18 +46,18 @@ local ColorExtraDark = Color(26, 26, 26, 255)
 local ColorLightDark = Color(37, 37, 37, 255)
 
 -- Default values 
-local Version = "2.0.0"
+local Version = "2.0.0" 
 local TimeStamp = "Sussy Edition"
 local GUITitle = "Title GUI"
 local mark = {}
 local lastText = ""
-local ColorCache = Color(255,192,203)
+local ColorCache = Color(255,106,210)
 local Titles = {}
 local EditMode = false
 local ActiveLine = nil
 local DefaultTime = 4
 local Info = [[
-Heres some info to get you started on your title adventrue
+Heres some info to get you started on your title adventure
 
 1. Right click on the list items for options.
 2. Double clicking list items will set them to edit mode.
@@ -189,7 +189,7 @@ local function MollyNote(parent, text,color )
 end
 
 -- Text input function [Creates frame for save as function to get file name]
-local function TextPopup()
+local function TextPopup(textname)
 	local Frame = vgui.Create("DFrame")
 	Frame:SetSize(370,82)
 	Frame:Center()
@@ -200,7 +200,7 @@ local function TextPopup()
 		draw.RoundedBox(10, 0, 0, w, h, ColorDark)
 	end
 	
-	local Text,Body = StyleTextEntry(Frame,245,"Filename")
+	local Text,Body = StyleTextEntry(Frame,245,textname)
 	Body:SetPos(6,32)
 	
 	local Save = StyleButton(Frame,Material("icon16/page_go.png"),"Save",ColorExtraDark,ColorBlue)
@@ -612,7 +612,7 @@ concommand.Add("title_gui",function()
 	Save:Dock(LEFT)
 	Save:DockMargin(0,0,4,0)
 	Save.DoClick = function()
-		local SButton,SText,SFrame = TextPopup()
+		local SButton,SText,SFrame = TextPopup("Filename")
 		SButton.DoClick = function()
 			SaveTable( "meta_titles/" .. string.Replace( string.lower( SText:GetValue() ), " ", "_" ) ..".json")
 			MollyNote(LoginPanel, "Saved to " .. string.Replace( string.lower( SText:GetValue() ), " ", "_" ) ..".json",ColorGreen )
@@ -752,6 +752,19 @@ concommand.Add("title_gui",function()
 			table.remove( Titles, Line) 
 			ClearForm() end)
 		Delete:SetIcon( "icon16/delete.png" )
+
+		local Mass_Delay = Menu:AddOption( "Mass Delay" , function() 
+			local Save,Text,Frame = TextPopup("Delay")
+			Save.DoClick = function()
+				for k,v in ipairs(Titles) do
+					v[2] = Text:GetValue()
+					SaveTable("meta_titles_cache/autoload.json")
+					TitleListRefresh()
+					Frame:Close()
+				end
+			end
+		end)
+		Mass_Delay:SetIcon( "icon16/clock_edit.png" )
 		
 		Menu:Open()
 	end
