@@ -78,7 +78,7 @@ end
 
 -- read table function
 local function ReadTable(filename)
-        Titles = util.JSONToTable(file.Read("meta_titles_cache/" .. filename, "DATA") or "[]")
+    Titles = util.JSONToTable(file.Read("meta_titles_cache/" .. filename, "DATA") or "[]")
 end
 
 -- used for animation
@@ -421,14 +421,18 @@ concommand.Add("title_gui", function()
     InfoButton:SetPos(FrameW - 44, 6)
 
     InfoButton.DoClick = function()
-        local Frame = vgui.Create("DFrame")
-        Frame:SetSize(450, 350)
-        Frame:Center()
-        Frame:SetTitle(" ")
-        Frame:ShowCloseButton(false)
-        Frame:MakePopup()
+        local InfoButtonFrame = vgui.Create("DFrame")
+        InfoButtonFrame:SetSize(450, 350)
+        InfoButtonFrame:Center()
+        InfoButtonFrame:SetTitle(" ")
+        InfoButtonFrame:ShowCloseButton(false)
+        InfoButtonFrame:MakePopup()
 
-        Frame.Paint = function(self, w, h)
+        function Frame:OnClose()
+            InfoButtonFrame:Close()
+        end
+
+        InfoButtonFrame.Paint = function(self, w, h)
             draw.RoundedBox(10, 0, 0, w, h, ColorDark)
             surface.SetFont("PT_Header")
             surface.SetTextColor(ColorWhite)
@@ -440,17 +444,17 @@ concommand.Add("title_gui", function()
             surface.DrawText("Now less useful!")
         end
 
-        local DLabel = vgui.Create("DLabel", Frame)
+        local DLabel = vgui.Create("DLabel", InfoButtonFrame)
         DLabel:SetFont("PT_Button")
         DLabel:SetTextColor(ColorWhite)
         DLabel:SetText(Info)
         DLabel:Dock(FILL)
         DLabel:DockMargin(8, 30, 0, 0)
-        local Close = SmallButton(Frame, "X", ColorRed, ColorDarkRed)
-        Close:SetPos(Frame:GetWide() - 24, 6)
+        local Close = SmallButton(InfoButtonFrame, "X", ColorRed, ColorDarkRed)
+        Close:SetPos(InfoButtonFrame:GetWide() - 24, 6)
 
         Close.DoClick = function()
-            Frame:Close()
+            InfoButtonFrame:Close()
         end
     end
 
@@ -518,6 +522,11 @@ concommand.Add("title_gui", function()
 
     ColorPicker.DoClick = function()
         Menu = DermaMenu()
+
+        function Frame:OnClose()
+            Menu:Remove()
+        end
+
         Menu.Paint = nil
         local ColorMixerBase = vgui.Create("DPanel", Menu)
         ColorMixerBase:SetSize(200, 200)
@@ -630,6 +639,10 @@ concommand.Add("title_gui", function()
     Save.DoClick = function()
         local SButton, SText, SFrame = TextPopup("Filename")
 
+        function Frame:OnClose()
+            SFrame:Close()
+        end
+
         SButton.DoClick = function()
             SaveTable("meta_titles/" .. string.Replace(string.lower(SText:GetValue()), " ", "_") .. ".json")
             PT_Note(LoginPanel, "Saved to " .. string.Replace(string.lower(SText:GetValue()), " ", "_") .. ".json", ColorGreen)
@@ -709,6 +722,8 @@ concommand.Add("title_gui", function()
 
         Files.SearchBox:Remove()
         Files.Update:Remove()
+
+        return Frame
     end
 
     -- Load button [Opens the panel above]
@@ -716,7 +731,11 @@ concommand.Add("title_gui", function()
     Load:Dock(LEFT)
 
     Load.DoClick = function()
-        LoadPanel()
+        local LoadFrame = LoadPanel()
+
+        function Frame:OnClose()
+            LoadFrame:Close()
+        end
     end
 
     -- Clear button [Emptys form and table also epm]
@@ -725,6 +744,10 @@ concommand.Add("title_gui", function()
 
     Clear.DoClick = function()
         local Yes, BaseFrame = ConfirmPopup()
+
+        function Frame:OnClose()
+            BaseFrame:Close()
+        end
 
         Yes.DoClick = function()
             table.Empty(Titles)
@@ -794,14 +817,18 @@ concommand.Add("title_gui", function()
         Delete:SetIcon("icon16/delete.png")
 
         local Mass_Delay = Menu:AddOption("Mass Delay", function()
-            local Save, Text, Frame = TextPopup("Delay")
+            local MDSave, Text, MDFrame = TextPopup("Delay")
 
-            Save.DoClick = function()
+            function Frame:OnClose()
+                MDFrame:Close()
+            end
+
+            MDSave.DoClick = function()
                 for k, v in ipairs(Titles) do
                     v[2] = Text:GetValue()
                     SaveTable("meta_titles_cache/autoload.json")
                     TitleListRefresh()
-                    Frame:Close()
+                    MDFrame:Close()
                 end
             end
         end)
