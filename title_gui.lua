@@ -80,7 +80,11 @@ end
 -- read table function
 local function ReadTable(filename)
 	temp = file.Read( "meta_titles_cache/" .. filename, "DATA" )
-	Titles = util.JSONToTable( temp )
+	if temp == nil then 
+		Titles = {}
+	else
+		Titles = util.JSONToTable( temp )
+	end
 end
 
 -- used for animation
